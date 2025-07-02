@@ -1,0 +1,23 @@
+Assets/
+├── _Project/
+│   ├── Art/                # Background, UI, Characters, Effects
+│   ├── Audio/              # Music, SFX
+│   ├── Materials/          # Materials, Shaders
+│   ├── Prefabs/            # Các prefab: Player, Enemy, Obstacle, UI
+│   ├── Scenes/             # Tất cả scene
+│   │   ├── MainMenu.unity
+│   │   ├── Game.unity
+│   │   └── GameOver.unity
+│   ├── Scripts/            # Chia theo feature
+│   │   ├── Player/         # Player controller, player animation
+│   │   ├── Enemy/          # Enemy logic
+│   │   ├── UI/             # UI controller, button handler
+│   │   ├── GameSystem/     # GameManager, ScoreManager, Pooling
+│   │   ├── Utilities/      # Helper, Extension, Singleton base
+│   │   └── Core/           # Base class, Event System, Data model
+│   ├── Animation/          # Animator Controller, Animation Clips
+│   ├── Fonts/              # Font chữ sử dụng
+│   ├── Resources/          # Asset load runtime nếu cần
+│   └── VFX/                # Particle, Trail Renderer asset
+├── Plugins/                # Các asset plugin: Odin, Hot Reload, DoTween
+└── Settings/               # Input, Tag & Layer, Project Setting file
