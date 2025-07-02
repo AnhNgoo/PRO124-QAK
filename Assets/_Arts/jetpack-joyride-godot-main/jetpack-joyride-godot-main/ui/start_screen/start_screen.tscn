@@ -1,0 +1,96 @@
+[gd_scene load_steps=6 format=3 uid="uid://e4unmckmojc6"]
+
+[ext_resource type="Theme" uid="uid://f1t8okxjimt2" path="res://ui/base_theme.tres" id="1_7nh7e"]
+[ext_resource type="Script" path="res://ui/start_screen/start_screen.gd" id="2_gl2r5"]
+[ext_resource type="Texture2D" uid="uid://botxktqdvtlc4" path="res://entities/collectable/coin/coin_sprite.png" id="3_psbl7"]
+[ext_resource type="AudioStream" uid="uid://pp5n8lp73sg" path="res://assets/original_sfx/ui_start_travel.wav" id="4_nyax7"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ooxon"]
+atlas = ExtResource("3_psbl7")
+region = Rect2(0, 0, 32, 32)
+
+[node name="StartScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+theme = ExtResource("1_7nh7e")
+script = ExtResource("2_gl2r5")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+
+[node name="coins" type="Label" parent="VBoxContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.929412, 0.45098, 1)
+theme_override_constants/outline_size = 32
+theme_override_font_sizes/font_size = 48
+text = "000"
+vertical_alignment = 1
+uppercase = true
+
+[node name="TextureRect" type="TextureRect" parent="VBoxContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+texture = SubResource("AtlasTexture_ooxon")
+expand_mode = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = -64
+
+[node name="Label" type="Label" parent="VBoxContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.741385, 0.741385, 0.741385, 1)
+theme_override_constants/outline_size = 64
+theme_override_font_sizes/font_size = 256
+text = "JETPACK"
+horizontal_alignment = 1
+vertical_alignment = 1
+uppercase = true
+
+[node name="Label2" type="Label" parent="VBoxContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.7445, 0.27, 1)
+theme_override_constants/outline_size = 64
+theme_override_font_sizes/font_size = 256
+text = "JOYRIDE"
+horizontal_alignment = 1
+vertical_alignment = 1
+uppercase = true
+
+[node name="start" type="MarginContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 10
+theme_override_constants/margin_bottom = 100
+
+[node name="Label" type="Label" parent="VBoxContainer/start"]
+layout_mode = 2
+size_flags_vertical = 10
+theme_override_constants/outline_size = 32
+theme_override_font_sizes/font_size = 64
+text = "TOUCH ANYWHERE TO PLAY!"
+horizontal_alignment = 1
+vertical_alignment = 1
+uppercase = true
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("4_nyax7")
+volume_db = -12.0
+bus = &"ui"

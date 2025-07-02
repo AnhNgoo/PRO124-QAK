@@ -1,0 +1,63 @@
+[gd_scene load_steps=16 format=3 uid="uid://dkiufj3yhj50s"]
+
+[ext_resource type="PackedScene" uid="uid://d370gfo85kgf6" path="res://stages/parallax_background/parallax_background.tscn" id="1_6cvk4"]
+[ext_resource type="PackedScene" uid="uid://e4unmckmojc6" path="res://ui/start_screen/start_screen.tscn" id="2_dox6r"]
+[ext_resource type="PackedScene" uid="uid://cw101ycuhjuav" path="res://entities/player/player.tscn" id="3_7gqhq"]
+[ext_resource type="PackedScene" uid="uid://c04c0t0p0lfve" path="res://ui/hud/hud.tscn" id="3_fha2a"]
+[ext_resource type="PackedScene" uid="uid://bua8h7f2d4u26" path="res://ui/game_over_screen/game_over_screen.tscn" id="3_vmle4"]
+[ext_resource type="PackedScene" uid="uid://ds0s6dw8skubu" path="res://ui/pause_menu/pause_menu.tscn" id="5_svk77"]
+[ext_resource type="Script" path="res://entities/collectable/coin/spawner/coin_spawner.gd" id="7_h8lfd"]
+[ext_resource type="PackedScene" uid="uid://c0daa8774747j" path="res://entities/collectable/coin/coin.tscn" id="8_2l1dg"]
+[ext_resource type="Script" path="res://entities/zapper/spawner/zapper_spawner.gd" id="9_xutpq"]
+[ext_resource type="PackedScene" uid="uid://bp72kj0ecgu1t" path="res://entities/zapper/zapper.tscn" id="10_dsiyu"]
+[ext_resource type="Script" path="res://entities/missile/spawner/missile_spawner.gd" id="11_tf6qg"]
+[ext_resource type="PackedScene" uid="uid://dtigid26sgbs5" path="res://entities/missile/missile.tscn" id="12_tc22m"]
+[ext_resource type="Script" path="res://utilities/music/music_player.gd" id="13_spdfk"]
+[ext_resource type="AudioStream" uid="uid://bpeoke53tynbx" path="res://assets/original_music/01.main_theme.mp3" id="14_8irrw"]
+[ext_resource type="AudioStream" uid="uid://2yotpw8c408v" path="res://assets/original_music/04.home.mp3" id="15_imche"]
+
+[node name="Main" type="Node2D"]
+
+[node name="ParallaxBackground" parent="." instance=ExtResource("1_6cvk4")]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="StartScreen" parent="CanvasLayer" instance=ExtResource("2_dox6r")]
+
+[node name="HUD" parent="CanvasLayer" instance=ExtResource("3_fha2a")]
+visible = false
+
+[node name="GameOverScreen" parent="CanvasLayer" instance=ExtResource("3_vmle4")]
+visible = false
+
+[node name="PauseMenu" parent="CanvasLayer" instance=ExtResource("5_svk77")]
+visible = false
+
+[node name="Player" parent="." instance=ExtResource("3_7gqhq")]
+position = Vector2(600, 940)
+
+[node name="CoinSpawner" type="Node2D" parent="."]
+script = ExtResource("7_h8lfd")
+node_scene = ExtResource("8_2l1dg")
+
+[node name="ZapperSpawner" type="Node2D" parent="."]
+script = ExtResource("9_xutpq")
+node_scene = ExtResource("10_dsiyu")
+interval_min = 2.0
+interval_max = 6.0
+
+[node name="MissileSpawner" type="Node2D" parent="." node_paths=PackedStringArray("target_node")]
+script = ExtResource("11_tf6qg")
+node_scene = ExtResource("12_tc22m")
+interval_min = 5.0
+interval_max = 12.0
+target_node = NodePath("../Player")
+
+[node name="MusicPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("15_imche")
+volume_db = -12.0
+autoplay = true
+bus = &"music"
+script = ExtResource("13_spdfk")
+music_main_theme = ExtResource("14_8irrw")
+music_home = ExtResource("15_imche")

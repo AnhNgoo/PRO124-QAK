@@ -1,0 +1,42 @@
+[gd_scene load_steps=3 format=3 uid="uid://dibncjywm4vpa"]
+
+[ext_resource type="Theme" uid="uid://f1t8okxjimt2" path="res://ui/base_theme.tres" id="1_2m1wu"]
+[ext_resource type="Script" path="res://ui/leaderboard/leaderboard_entry_ui.gd" id="2_mpjbl"]
+
+[node name="LeaderboardEntryUI" type="HBoxContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_2m1wu")
+script = ExtResource("2_mpjbl")
+
+[node name="order_label" type="Label" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 32
+text = "1."
+vertical_alignment = 1
+
+[node name="distance_label" type="Label" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 32
+text = "9999M"
+vertical_alignment = 1
+
+[node name="name_label" type="Label" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 32
+text = "ISAAC JORDAN"
+vertical_alignment = 1
+
+[node name="date_label" type="Label" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 32
+text = "2025.01.01"
+horizontal_alignment = 2
+vertical_alignment = 1

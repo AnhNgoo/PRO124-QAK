@@ -1,0 +1,169 @@
+[gd_scene load_steps=8 format=3 uid="uid://bua8h7f2d4u26"]
+
+[ext_resource type="Theme" uid="uid://f1t8okxjimt2" path="res://ui/base_theme.tres" id="1_t2egg"]
+[ext_resource type="Script" path="res://ui/game_over_screen/game_over_screen.gd" id="2_rovtf"]
+[ext_resource type="AudioStream" uid="uid://b0m613tntjxfn" path="res://assets/original_sfx/achievement_complete.wav" id="3_q2c20"]
+[ext_resource type="PackedScene" uid="uid://dibncjywm4vpa" path="res://ui/leaderboard/leaderboard_entry.tscn" id="3_tevej"]
+[ext_resource type="Texture2D" uid="uid://botxktqdvtlc4" path="res://entities/collectable/coin/coin_sprite.png" id="4_10ec3"]
+[ext_resource type="AudioStream" uid="uid://c6gk44kojsfmf" path="res://assets/original_sfx/ui_select.wav" id="4_w7vc5"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_m7u26"]
+atlas = ExtResource("4_10ec3")
+region = Rect2(0, 0, 32, 32)
+
+[node name="GameOverScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_t2egg")
+script = ExtResource("2_rovtf")
+audio_highscore = ExtResource("3_q2c20")
+audio_select = ExtResource("4_w7vc5")
+leaderboard_entry_scene = ExtResource("3_tevej")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+
+[node name="Label" type="Label" parent="HBoxContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/outline_size = 32
+theme_override_font_sizes/font_size = 64
+text = "YOU FLEW"
+horizontal_alignment = 1
+vertical_alignment = 1
+uppercase = true
+
+[node name="distance" type="Label" parent="HBoxContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.55, 0, 1)
+theme_override_constants/outline_size = 64
+theme_override_font_sizes/font_size = 256
+text = "0M"
+horizontal_alignment = 1
+vertical_alignment = 1
+uppercase = true
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="Label" type="Label" parent="HBoxContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/outline_size = 32
+theme_override_font_sizes/font_size = 64
+text = "AND COLLECTED "
+horizontal_alignment = 1
+vertical_alignment = 1
+uppercase = true
+
+[node name="coins" type="Label" parent="HBoxContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.929412, 0.45098, 1)
+theme_override_constants/outline_size = 32
+theme_override_font_sizes/font_size = 64
+text = "0"
+vertical_alignment = 1
+uppercase = true
+
+[node name="TextureRect" type="TextureRect" parent="HBoxContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+texture = SubResource("AtlasTexture_m7u26")
+expand_mode = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/margin_left = 32
+theme_override_constants/margin_top = 32
+theme_override_constants/margin_right = 128
+theme_override_constants/margin_bottom = 32
+
+[node name="highscore" type="VBoxContainer" parent="HBoxContainer/MarginContainer"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 32
+
+[node name="Label" type="Label" parent="HBoxContainer/MarginContainer/highscore"]
+custom_minimum_size = Vector2(800, 150)
+layout_mode = 2
+theme_override_constants/outline_size = 32
+theme_override_font_sizes/font_size = 128
+text = "NEW HIGHSCORE"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+uppercase = true
+
+[node name="leaderboard_name" type="LineEdit" parent="HBoxContainer/MarginContainer/highscore"]
+layout_mode = 2
+size_flags_vertical = 6
+theme_override_font_sizes/font_size = 128
+placeholder_text = "YOUR NAME"
+alignment = 1
+max_length = 16
+
+[node name="continue_button" type="Button" parent="HBoxContainer/MarginContainer/highscore"]
+layout_mode = 2
+size_flags_vertical = 8
+theme_override_font_sizes/font_size = 128
+text = "CONTINUE"
+
+[node name="leaderboard" type="VBoxContainer" parent="HBoxContainer/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 32
+
+[node name="TabContainer" type="TabContainer" parent="HBoxContainer/MarginContainer/leaderboard"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_font_sizes/font_size = 64
+current_tab = 0
+
+[node name="Leaderboard" type="Control" parent="HBoxContainer/MarginContainer/leaderboard/TabContainer"]
+layout_mode = 2
+metadata/_tab_index = 0
+
+[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/MarginContainer/leaderboard/TabContainer/Leaderboard"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 32
+theme_override_constants/margin_top = 32
+theme_override_constants/margin_right = 32
+theme_override_constants/margin_bottom = 32
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/MarginContainer/leaderboard/TabContainer/Leaderboard/MarginContainer"]
+layout_mode = 2
+
+[node name="home_button" type="Button" parent="HBoxContainer/MarginContainer/leaderboard"]
+layout_mode = 2
+size_flags_vertical = 8
+theme_override_font_sizes/font_size = 128
+text = "HOME"
+
+[node name="restart_button" type="Button" parent="HBoxContainer/MarginContainer/leaderboard"]
+layout_mode = 2
+size_flags_vertical = 8
+theme_override_font_sizes/font_size = 128
+text = "RESTART"
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+volume_db = -12.0
+bus = &"ui"
