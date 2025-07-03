@@ -8,7 +8,7 @@ public class MapSpawner : MonoBehaviour
 {
     //Public
     public float scrollSpeed = 0f;
-    public int distanceToNextMap = 100;
+    public int distanceToNextMap = 200;
     public Transform StartPosition;
     public List<GameObject> mapPrefab;
 
@@ -18,41 +18,47 @@ public class MapSpawner : MonoBehaviour
     private GameObject nextMap;
     private int currentMapIndex = 0;
     private int nextMapIndex = -1;
+    private float currentMapLength;
 
     //Thêm prefab vào pool
-    private void AddListPrefabToPool()
+    private void AddListPrefabToPoolAndSetParents()
     {
         ObjectPooler.Instance.Add("Map", mapPrefab);
+        ObjectPooler.Instance.SetParents(gameObject, "Map");
     }
     //Khoi tạo Map
     private void InitMap()
     {
-        currentMap = ObjectPooler.Instance.SpawnFromPool("Map", currentMapIndex, StartPosition.position + new Vector3(-5, 0, 0), Quaternion.identity);
+        currentMap = ObjectPooler.Instance.SpawnFromPool("Map", currentMapIndex, StartPosition.position, Quaternion.identity);
+        currentMapLength = currentMap.GetComponent<MapInfo>().MapLength;
+
         nextMap = SpawnRandomMap(GetNextMapPosition());
     }
     void Start()
     {
-        AddListPrefabToPool();
-        ObjectPooler.Instance.SetParents(gameObject, "Map");
+        AddListPrefabToPoolAndSetParents();
+
         InitMap();
     }
 
     void Update()
     {
+        MoveMap();
         UpdateMap();
     }
 
     //Cập nhật Map
     private void UpdateMap()
     {
-        MoveMap(currentMap);
-
-        if (currentMap.transform.position.x <= -30)
+        if (currentMap.transform.position.x <= StartPosition.position.x - currentMapLength / 2)
         {
             ObjectPooler.Instance.DesTroy(previousMap);
 
             previousMap = currentMap;
+
             currentMap = nextMap;
+            currentMapLength = currentMap.GetComponent<MapInfo>().MapLength;
+
             nextMap = SpawnRandomMap(GetNextMapPosition());
         }
     }
@@ -61,7 +67,7 @@ public class MapSpawner : MonoBehaviour
     //Lấy vi trí của Map tiếp theo
     private Vector3 GetNextMapPosition()
     {
-        return currentMap.transform.position + new Vector3(distanceToNextMap, 0, 0);
+        return currentMap.transform.position + new Vector3(currentMapLength, 0, 0);
     }
 
     //Spawn Map ngẫu nhiên
@@ -101,7 +107,7 @@ public class MapSpawner : MonoBehaviour
         nextMapIndex = newIndex;
     }
     //Di chuyển Map
-    void MoveMap(GameObject map)
+    void MoveMap()
     {
         transform.Translate(Vector3.left * scrollSpeed * Time.deltaTime);
     }
