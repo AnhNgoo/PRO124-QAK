@@ -56,5 +56,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "JetpackBoy.sln"
+    "dotnet.defaultSolution": "PRO124-QAK.sln"
 }
