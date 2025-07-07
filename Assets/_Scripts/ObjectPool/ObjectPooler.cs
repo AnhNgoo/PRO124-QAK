@@ -2,14 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ObjectPooler : MonoBehaviour
+public class ObjectPooler : Singleton<ObjectPooler>
 {
     private readonly Dictionary<string, List<GameObject>> poolDictionary = new();
-    public static ObjectPooler Instance;
-    private void Awake()
-    {
-        Instance = this;
-    }
 
     public void Add(string tag, List<GameObject> listPrefab)
     {

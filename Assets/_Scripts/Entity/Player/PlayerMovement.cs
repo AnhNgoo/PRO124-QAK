@@ -32,17 +32,16 @@ public class PlayerMovement : MonoBehaviour
             if (rb.velocity.y < maxVerticalSpeed)
             {
                 rb.AddForce(Vector2.up * flyForce, ForceMode2D.Force);
-                Debug.Log("Flying with force: " + flyForce);
             }
 
             // Bật hiệu ứng
-           
-                jetpackParticle.Play();
+
+            jetpackParticle.Play();
         }
         else
         {
-         
-                jetpackParticle.Stop();
+
+            jetpackParticle.Stop();
         }
     }
 

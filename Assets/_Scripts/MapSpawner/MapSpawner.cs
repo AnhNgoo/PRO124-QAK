@@ -8,17 +8,16 @@ public class MapSpawner : MonoBehaviour
 {
     //Public
     public float scrollSpeed = 0f;
-    public int distanceToNextMap = 200;
-    public Transform StartPosition;
+
     public List<GameObject> mapPrefab;
 
     //Private
+    private Vector3 StartSpawnMapPoint = new Vector3(-1.7f, 0, 0);
     private GameObject previousMap;
     private GameObject currentMap;
     private GameObject nextMap;
     private int currentMapIndex = 0;
     private int nextMapIndex = -1;
-    private float currentMapLength;
 
     //Thêm prefab vào pool
     private void AddListPrefabToPoolAndSetParents()
@@ -29,10 +28,10 @@ public class MapSpawner : MonoBehaviour
     //Khoi tạo Map
     private void InitMap()
     {
-        currentMap = ObjectPooler.Instance.SpawnFromPool("Map", currentMapIndex, StartPosition.position, Quaternion.identity);
-        currentMapLength = currentMap.GetComponent<MapInfo>().MapLength;
 
+        currentMap = ObjectPooler.Instance.SpawnFromPool("Map", currentMapIndex, StartSpawnMapPoint, Quaternion.identity);
         nextMap = SpawnRandomMap(GetNextMapPosition());
+        nextMap.GetComponent<ResetMap>().Reset();
     }
     void Start()
     {
@@ -50,16 +49,16 @@ public class MapSpawner : MonoBehaviour
     //Cập nhật Map
     private void UpdateMap()
     {
-        if (currentMap.transform.position.x <= StartPosition.position.x - currentMapLength / 2)
+        if (currentMap.transform.position.x <= StartSpawnMapPoint.x)
         {
             ObjectPooler.Instance.DesTroy(previousMap);
 
             previousMap = currentMap;
 
             currentMap = nextMap;
-            currentMapLength = currentMap.GetComponent<MapInfo>().MapLength;
 
             nextMap = SpawnRandomMap(GetNextMapPosition());
+            nextMap.GetComponent<ResetMap>().Reset();
         }
     }
 
@@ -67,7 +66,16 @@ public class MapSpawner : MonoBehaviour
     //Lấy vi trí của Map tiếp theo
     private Vector3 GetNextMapPosition()
     {
-        return currentMap.transform.position + new Vector3(currentMapLength, 0, 0);
+        Vector3 SpawnMapPoint = Vector3.zero;
+        foreach (Transform child in currentMap.transform)
+        {
+            if (child.CompareTag("SpawnMapPoint"))
+            {
+                SpawnMapPoint = child.position;
+                break;
+            }
+        }
+        return SpawnMapPoint;
     }
 
     //Spawn Map ngẫu nhiên
@@ -103,7 +111,7 @@ public class MapSpawner : MonoBehaviour
         else if (nextMap == null)
             nextMapIndex = newIndex;
         else
-            currentMapIndex = nextMapIndex; // shift index theo logic map
+            currentMapIndex = nextMapIndex;
         nextMapIndex = newIndex;
     }
     //Di chuyển Map
