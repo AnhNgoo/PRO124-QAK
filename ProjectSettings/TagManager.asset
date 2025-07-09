@@ -6,7 +6,10 @@ TagManager:
   tags:
   - Ground
   - SpawnMapPoint
-  - Kill
+  - Obstacle
+  - ObstacleBlocker
+  - Coin
+  - PowerUp
   layers:
   - Default
   - TransparentFX

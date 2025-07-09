@@ -6,16 +6,17 @@ public class PlayerDeath : MonoBehaviour
 {
     private GameObject smoke;
     private ParticleSystem smokeParticle;
-    private PlayerController playerController;
+
+    public delegate void PlayerDeathDelegate();
+    public event PlayerDeathDelegate deathEvent;
     private void Start()
     {
         GetComponent();
         smoke.SetActive(false);
-        playerController.playerStatus.deathEvent += Death;
+        deathEvent += Death;
     }
     private void GetComponent()
     {
-        playerController = GetComponent<PlayerController>();
         smoke = GameObject.Find("Smoke");
         smokeParticle = smoke.GetComponent<ParticleSystem>();
     }
@@ -27,5 +28,14 @@ public class PlayerDeath : MonoBehaviour
 
         smokeParticle.Play();
         gameObject.SetActive(false);
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (PowerUpManager.Instance.shield.isActive) return;
+        if (collision.CompareTag("Obstacle"))
+        {
+            deathEvent?.Invoke();
+        }
     }
 }

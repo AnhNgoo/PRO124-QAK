@@ -27,6 +27,8 @@ public class PlayerMovement : MonoBehaviour
 
     void HandleFlying()
     {
+        if (CutSceneBlocker.Instance.isCutSceneActive) return;
+
         if (Input.GetKey(KeyCode.Space))
         {
             if (rb.velocity.y < maxVerticalSpeed)

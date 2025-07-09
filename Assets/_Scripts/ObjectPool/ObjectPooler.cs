@@ -31,17 +31,46 @@ public class ObjectPooler : Singleton<ObjectPooler>
 
         return obj;
     }
+
+    public GameObject SpawnFromPool(string tag, Vector3 position, Quaternion rotation, float autoDisableTime)
+    {
+        if (!poolDictionary.ContainsKey(tag))
+            return null;
+
+        // Tìm object chưa active
+        foreach (GameObject obj in poolDictionary[tag])
+        {
+            if (!obj.activeInHierarchy)
+            {
+                obj.SetActive(true);
+                obj.transform.SetPositionAndRotation(position, rotation);
+
+                // Tự động disable sau time chỉ định
+                StartCoroutine(AutoDisable(obj, autoDisableTime));
+                return obj;
+            }
+        }
+
+        return null; // Không còn object trống trong pool
+    }
+
     public void DesTroy(GameObject obj)
     {
         if (obj == null) return;
         obj.SetActive(false);
     }
 
-    public void SetParents(GameObject parent ,string tag)
+    public void SetParents(GameObject parent, string tag)
     {
         foreach (var obj in poolDictionary[tag])
         {
             obj.transform.SetParent(parent.transform);
         }
+    }
+
+    private IEnumerator AutoDisable(GameObject obj, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        obj.SetActive(false);
     }
 }

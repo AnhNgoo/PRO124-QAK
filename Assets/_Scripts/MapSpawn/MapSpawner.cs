@@ -4,20 +4,24 @@ using UnityEditor.Rendering.LookDev;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public class MapSpawner : MonoBehaviour
+public class MapSpawner : Singleton<MapSpawner>
 {
     //Public
     public float scrollSpeed = 0f;
+    public float durationStop = 1f;
+    public float powerUpSpawnDistance = 100f; // Khoảng cách để spawn PowerUp
 
     public List<GameObject> mapPrefab;
 
     //Private
+    private PlayerController playerController;
     private Vector3 StartSpawnMapPoint = new Vector3(-1.7f, 0, 0);
     private GameObject previousMap;
     private GameObject currentMap;
     private GameObject nextMap;
     private int currentMapIndex = 0;
     private int nextMapIndex = -1;
+    private float nextPowerUpSpawnDistance = 0f;
 
     //Thêm prefab vào pool
     private void AddListPrefabToPoolAndSetParents()
@@ -28,24 +32,35 @@ public class MapSpawner : MonoBehaviour
     //Khoi tạo Map
     private void InitMap()
     {
-
         currentMap = ObjectPooler.Instance.SpawnFromPool("Map", currentMapIndex, StartSpawnMapPoint, Quaternion.identity);
+        currentMap.name = "StartingMap";
         nextMap = SpawnRandomMap(GetNextMapPosition());
-        nextMap.GetComponent<ResetMap>().Reset();
+    }
+
+    public void SetScrollSpeed(float speed)
+    {
+        scrollSpeed = speed;
     }
     void Start()
     {
+        nextPowerUpSpawnDistance = powerUpSpawnDistance;
         AddListPrefabToPoolAndSetParents();
-
         InitMap();
+        GetComponent();
     }
 
     void Update()
     {
         MoveMap();
         UpdateMap();
+        SpawnPowerUpByDistance();
     }
 
+    private void GetComponent()
+    {
+        playerController = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
+        playerController.playerDeath.deathEvent += StopScrollingInTime;
+    }
     //Cập nhật Map
     private void UpdateMap()
     {
@@ -58,7 +73,6 @@ public class MapSpawner : MonoBehaviour
             currentMap = nextMap;
 
             nextMap = SpawnRandomMap(GetNextMapPosition());
-            nextMap.GetComponent<ResetMap>().Reset();
         }
     }
 
@@ -118,6 +132,38 @@ public class MapSpawner : MonoBehaviour
     void MoveMap()
     {
         transform.Translate(Vector3.left * scrollSpeed * Time.deltaTime);
+    }
+
+    //Dừng khi player chết
+    public void StopScrollingInTime()
+    {
+        StartCoroutine(SmoothStopScroll(durationStop));
+    }
+
+    private IEnumerator SmoothStopScroll(float durationStop)
+    {
+        float startSpeed = scrollSpeed;
+        float timeElapsed = 0f;
+
+        while (timeElapsed < durationStop)
+        {
+            timeElapsed += Time.deltaTime;
+            float t = timeElapsed / durationStop;
+            scrollSpeed = Mathf.Lerp(startSpeed, 0f, t);
+            yield return null;
+        }
+
+        scrollSpeed = 0f;
+    }
+
+    private void SpawnPowerUpByDistance()
+    {
+        if (DistanceTracker.Instance.distanceTraveled >= nextPowerUpSpawnDistance)
+        {
+            nextPowerUpSpawnDistance += powerUpSpawnDistance;
+            currentMap.GetComponent<ResetMap>().SpawnPowerUp();
+            Debug.Log("Da spawn");
+        }
     }
 }
 //Anh Khoa
