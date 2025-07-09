@@ -6,8 +6,8 @@ public class PlayerController : MonoBehaviour
 {
     public PlayerMovement playerMovement { get; private set; }
     public PlayerAnimation playerAnimation { get; private set; }
-    public PlayerDeath playerDeath { get; private set; }
-    public PlayerStatus playerStatus { get; private set; }
+    public PlayerDeath playerDeath { get; set; }
+    public PlayerPowerUp playerPowerUp { get; private set; }
     public CheckGround checkGround { get; private set; }
     void Start()
     {
@@ -19,7 +19,7 @@ public class PlayerController : MonoBehaviour
         playerMovement = GetComponent<PlayerMovement>();
         playerAnimation = GetComponent<PlayerAnimation>();
         playerDeath = GetComponent<PlayerDeath>();
-        playerStatus = GetComponent<PlayerStatus>();
+        playerPowerUp = GetComponent<PlayerPowerUp>();
         checkGround = GetComponent<CheckGround>();
     }
 }

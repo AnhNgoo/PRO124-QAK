@@ -11,11 +11,12 @@ GameObject:
   - component: {fileID: 2169364009620059005}
   - component: {fileID: 6367180933536126577}
   - component: {fileID: 4889559352389338894}
-  - component: {fileID: 942143388077492646}
   - component: {fileID: 8049149571147516780}
+  - component: {fileID: 942143388077492646}
+  - component: {fileID: 7695032208539903560}
   m_Layer: 0
   m_Name: Coin
-  m_TagString: Untagged
+  m_TagString: Coin
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -95,7 +96,7 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3191698853236619246}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: c85a606802b64ab44bb388eb4413dd1f, type: 2}
   m_CullingMode: 0
@@ -108,18 +109,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &942143388077492646
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3191698853236619246}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9ea36619edf44e949ae9fabd23f8083a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!58 &8049149571147516780
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -155,3 +144,28 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.85
+--- !u!114 &942143388077492646
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3191698853236619246}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ea36619edf44e949ae9fabd23f8083a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &7695032208539903560
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3191698853236619246}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f12d2a4b7eb7ecb4fa7446458739d4e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetTag: ObstacleBlocker
