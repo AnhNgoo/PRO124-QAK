@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class StartGameCutScene : MonoBehaviour
+public class StartGameCutScene : Singleton<StartGameCutScene>
 {
     public Transform startingPoint;
     public Transform Map;
