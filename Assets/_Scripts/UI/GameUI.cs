@@ -9,17 +9,17 @@ public class GameUI : MonoBehaviour
     public GameObject MainPanel;
     public GameObject SettingPanel;
     public GameObject PausePanel;
-    
+
     [Header("Game UI Elements")]
     public GameObject PauseButton; // Nút pause khi đang chơi
-    
+
     [Header("Setting UI Elements")]
     public Toggle musicToggle;
     public Toggle sfxToggle;
-    
+
     private bool isSettingPanelOpen = false;
-    private bool isPauseState = false; 
-    
+    private bool isPauseState = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -46,7 +46,7 @@ public class GameUI : MonoBehaviour
             }
         }
     }
-    
+
     // Khởi tạo setting panel
     private void InitializeSettingPanel()
     {
@@ -55,7 +55,7 @@ public class GameUI : MonoBehaviour
             SettingPanel.SetActive(false);
             isSettingPanelOpen = false;
         }
-        
+
         // Khởi tạo giá trị từ AudioManager
         if (AudioManager.Instance != null)
         {
@@ -65,7 +65,7 @@ public class GameUI : MonoBehaviour
                 sfxToggle.isOn = AudioManager.Instance.isSFXEnabled;
         }
     }
-    
+
     // Khởi tạo pause system
     private void InitializePauseSystem()
     {
@@ -75,17 +75,17 @@ public class GameUI : MonoBehaviour
             PausePanel.SetActive(false);
             isPauseState = false;
         }
-        
+
         // Ẩn nút pause khi chưa bắt đầu game
         if (PauseButton != null)
         {
             PauseButton.SetActive(false);
         }
-        
+
         // Đảm bảo time scale về bình thường
         Time.timeScale = 1f;
     }
-    
+
     // Thiết lập events cho UI
     private void SetupUIEvents()
     {
@@ -95,7 +95,7 @@ public class GameUI : MonoBehaviour
         if (sfxToggle != null)
             sfxToggle.onValueChanged.AddListener(OnSFXToggleChanged);
     }
-    
+
     // Mở setting panel
     public void OpenSettingPanel()
     {
@@ -106,16 +106,16 @@ public class GameUI : MonoBehaviour
             {
                 PausePanel.SetActive(false);
             }
-            
+
             SettingPanel.SetActive(true);
             isSettingPanelOpen = true;
-            
+
             // Phát âm thanh click
             if (AudioManager.Instance != null)
                 AudioManager.Instance.PlaySFX("ButtonClick");
         }
     }
-    
+
     // Đóng setting panel
     public void CloseSettingPanel()
     {
@@ -123,19 +123,19 @@ public class GameUI : MonoBehaviour
         {
             SettingPanel.SetActive(false);
             isSettingPanelOpen = false;
-            
+
             // Nếu đang trong trạng thái pause, hiện lại pause panel
             if (isPauseState && PausePanel != null)
             {
                 PausePanel.SetActive(true);
             }
-            
+
             // Phát âm thanh click
             if (AudioManager.Instance != null)
                 AudioManager.Instance.PlaySFX("ButtonClick");
         }
     }
-    
+
     // Toggle setting panel (cho nút setting)
     public void ToggleSettingPanel()
     {
@@ -148,7 +148,7 @@ public class GameUI : MonoBehaviour
             OpenSettingPanel();
         }
     }
-    
+
     // Events cho setting controls
     private void OnMusicToggleChanged(bool value)
     {
@@ -158,7 +158,7 @@ public class GameUI : MonoBehaviour
             AudioManager.Instance.PlaySFX("ButtonClick");
         }
     }
-    
+
     private void OnSFXToggleChanged(bool value)
     {
         if (AudioManager.Instance != null)
@@ -169,9 +169,9 @@ public class GameUI : MonoBehaviour
                 AudioManager.Instance.PlaySFX("ButtonClick");
         }
     }
-    
+
     // === PAUSE GAME FUNCTIONS ===
-    
+
     // Hiển thị nút pause khi game bắt đầu
     public void ShowPauseButton()
     {
@@ -180,7 +180,7 @@ public class GameUI : MonoBehaviour
             PauseButton.SetActive(true);
         }
     }
-    
+
     // Ẩn nút pause
     public void HidePauseButton()
     {
@@ -189,7 +189,7 @@ public class GameUI : MonoBehaviour
             PauseButton.SetActive(false);
         }
     }
-    
+
     // Pause game - mở pause panel
     public void PauseGame()
     {
@@ -197,16 +197,16 @@ public class GameUI : MonoBehaviour
         {
             PausePanel.SetActive(true);
             isPauseState = true;
-            
+
             // Dừng thời gian trong game
             Time.timeScale = 0f;
-            
+
             // Phát âm thanh pause
             if (AudioManager.Instance != null)
                 AudioManager.Instance.PlaySFX("ButtonClick");
         }
     }
-    
+
     // Resume game - đóng pause panel
     public void ResumeGame()
     {
@@ -214,16 +214,16 @@ public class GameUI : MonoBehaviour
         {
             PausePanel.SetActive(false);
             isPauseState = false;
-            
+
             // Tiếp tục thời gian trong game
             Time.timeScale = 1f;
-            
+
             // Phát âm thanh resume
             if (AudioManager.Instance != null)
                 AudioManager.Instance.PlaySFX("ButtonClick");
         }
     }
-    
+
     // Home - quay về main panel và reset game
     public void GoHome()
     {
@@ -233,48 +233,48 @@ public class GameUI : MonoBehaviour
             PausePanel.SetActive(false);
             isPauseState = false;
         }
-        
+
         // Ẩn nút pause
         HidePauseButton();
-        
+
         // Hiện lại main panel
         if (MainPanel != null)
         {
             MainPanel.SetActive(true);
         }
-        
+
         // Reset thời gian về bình thường
         Time.timeScale = 1f;
-        
+
         // Phát âm thanh click
         if (AudioManager.Instance != null)
             AudioManager.Instance.PlaySFX("ButtonClick");
-        
+
         // Reset game về trạng thái ban đầu (có thể thêm logic reset khác ở đây)
         ResetGameToInitialState();
     }
-    
+
     // Reset game về trạng thái ban đầu
     private void ResetGameToInitialState()
     {
         // Reset các biến trạng thái
         isPauseState = false;
-        
+
         // Có thể thêm logic reset khác như:
         // - Reset điểm số
         // - Reset vị trí player
         // - Reset enemy
         // - Reset timer
-        
+
         Debug.Log("Game reset to initial state");
     }
-    
+
     // Kiểm tra trạng thái pause
     public bool IsGamePaused()
     {
         return isPauseState;
     }
-    
+
     // Method cho nút Start Game
     public void OnClickStartGame()
     {
@@ -283,14 +283,14 @@ public class GameUI : MonoBehaviour
         {
             MainPanel.SetActive(false);
         }
-        
+
         // Hiển thị nút pause khi game bắt đầu
         ShowPauseButton();
-        
+
         // Phát âm thanh
         if (AudioManager.Instance != null)
             AudioManager.Instance.PlaySFX("GameStart");
-        
+
         // Gọi trực tiếp qua Instance
         StartGameCutScene.Instance.StartCutScene();
     }

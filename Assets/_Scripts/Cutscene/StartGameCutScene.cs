@@ -18,13 +18,6 @@ public class StartGameCutScene : Singleton<StartGameCutScene>
         GetComponent();
     }
 
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.K))
-        {
-            StartCutScene();
-        }
-    }
     private void GetComponent()
     {
         playerGameObject = GameObject.FindGameObjectWithTag("Player");
@@ -77,6 +70,7 @@ public class StartGameCutScene : Singleton<StartGameCutScene>
             MapSpawner.Instance.SetScrollSpeed(10);
             playerRigidbody.gravityScale = 7f;
             CutSceneBlocker.Instance.isCutSceneActive = false;
+            UIManager.Instance.InGamePanelGameobject.SetActive(true);
         });
     }
 }

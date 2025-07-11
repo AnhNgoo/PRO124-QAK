@@ -1,5 +1,6 @@
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GenericShopManager<T> where T : IShopItem
 {
@@ -16,7 +17,7 @@ public class GenericShopManager<T> where T : IShopItem
 
         if (UIManager.Instance.itemUnlockButtonGameobject != null)
         {
-            UIManager.Instance.itemUnlockButtonImage = UIManager.Instance.itemUnlockButtonGameobject.GetComponent<UnityEngine.UI.Image>();
+            UIManager.Instance.itemUnlockButtonImage = UIManager.Instance.itemUnlockButtonGameobject.GetComponent<Image>();
         }
 
         LoadItem();
@@ -26,6 +27,7 @@ public class GenericShopManager<T> where T : IShopItem
     {
         var item = itemData.itemList.FirstOrDefault(i => i.Name == currentItemName)
                  ?? itemData.itemList.FirstOrDefault();
+
 
         if (item != null)
         {

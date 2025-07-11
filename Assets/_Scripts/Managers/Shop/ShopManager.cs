@@ -11,7 +11,7 @@ public class ShopManager : Singleton<ShopManager>
     private enum ShopType { Skin, Jetpack }
     private ShopType currentShop;
 
-    void Start()
+    public void LoadShop()
     {
         ShowSkinShop(); // mặc định là skin
     }
