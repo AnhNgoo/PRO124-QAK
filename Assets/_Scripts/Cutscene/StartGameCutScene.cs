@@ -12,19 +12,6 @@ public class StartGameCutScene : Singleton<StartGameCutScene>
     private Transform playerPosition;
     private Rigidbody2D playerRigidbody;
 
-
-    void Start()
-    {
-        GetComponent();
-    }
-
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.K))
-        {
-            StartCutScene();
-        }
-    }
     private void GetComponent()
     {
         playerGameObject = GameObject.FindGameObjectWithTag("Player");
@@ -34,6 +21,10 @@ public class StartGameCutScene : Singleton<StartGameCutScene>
 
     public void StartCutScene()
     {
+        if (playerGameObject == null || playerPosition == null || playerRigidbody == null)
+        {
+            GetComponent();
+        }
         Sequence sequence = DOTween.Sequence();
 
         sequence.AppendCallback(() =>
@@ -77,6 +68,7 @@ public class StartGameCutScene : Singleton<StartGameCutScene>
             MapSpawner.Instance.SetScrollSpeed(10);
             playerRigidbody.gravityScale = 7f;
             CutSceneBlocker.Instance.isCutSceneActive = false;
+            UIManager.Instance.InGamePanelGameobject.SetActive(true);
         });
     }
 }

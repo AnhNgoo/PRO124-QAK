@@ -7,10 +7,10 @@ using System.Linq;
 public class SkinManager : Singleton<SkinManager>
 {
     public SkinData skins;
-
+    public string currentSkinName;
     public SpriteLibrary spriteLibrary { get; set; }
     public ChangeSkin changeSkin { get; set; }
-    public string currentSkinName { get; set; } = "Default";
+
 
     private void Start()
     {
@@ -21,5 +21,6 @@ public class SkinManager : Singleton<SkinManager>
     {
         spriteLibrary = GameObject.Find("Player").GetComponent<SpriteLibrary>();
         changeSkin = GetComponent<ChangeSkin>();
+        currentSkinName = skins.currentItemName;
     }
 }

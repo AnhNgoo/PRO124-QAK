@@ -13,15 +13,15 @@ public class ChangeSkin : MonoBehaviour
 
     public void Set(string skinName)
     {
-        var skin = SkinManager.Instance.skins.skinList
+        var skin = SkinManager.Instance.skins.itemList
                         .FirstOrDefault(skin => skin.skinName == skinName &&
                                         skin.status == Skin.Status.Unlocked);
 
         if (skin != null)
             SkinManager.Instance.spriteLibrary.spriteLibraryAsset = skin.spriteLibraryAsset;
         else
-            SkinManager.Instance.spriteLibrary.spriteLibraryAsset = SkinManager.Instance.skins.skinList
-                                                      .FirstOrDefault(skin => skin.skinName == "Default")
+            SkinManager.Instance.spriteLibrary.spriteLibraryAsset = SkinManager.Instance.skins.itemList
+                                                      .FirstOrDefault(skin => skin.skinName == "JetBoy")
                                                       .spriteLibraryAsset;
         SkinManager.Instance.currentSkinName = skinName;
     }
