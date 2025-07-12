@@ -15,10 +15,14 @@ public class ShopUI : MainUI
         seq.AppendCallback(() => UIManager.Instance.ShopPanelGameobject.SetActive(false));
         if (onHidden != null)
             seq.AppendCallback(() => onHidden());
+        seq.SetUpdate(true);
     }
 
     public void Back()
     {
-        HideThisPanel(() => UIManager.Instance.MainPanelGameobject.SetActive(true));
+        if (UIManager.Instance.statePanel == UIManager.StatePanel.Main)
+            HideThisPanel(() => UIManager.Instance.MainPanelGameobject.SetActive(true));
+        else if (UIManager.Instance.statePanel == UIManager.StatePanel.Result)
+            HideThisPanel(() => UIManager.Instance.ResultPanelGameobject.SetActive(true));
     }
 }

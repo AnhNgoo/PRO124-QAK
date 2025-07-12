@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using DG.Tweening;
 
 public class SceneLoader : Singleton<SceneLoader>
 {
@@ -28,24 +29,45 @@ public class SceneLoader : Singleton<SceneLoader>
     {
         if (isLoading) return;
 
+        //Nếu mới vô game hoặc load về home mà không gán onHidden thì sẽ gán callback mặc định
+        if (staticOnLoadingComplete == null)
+        {
+            staticOnLoadingComplete = DefaultOnHidden; // Gán callback mặc định nếu không có
+        }
+
         StartCoroutine(LoadingCoroutine());
     }
 
     /// <summary>
     /// Hàm reload scene với loading (có thể gán vào nút Home)
     /// </summary>
-    public void ReloadSceneWithLoading(System.Action onHidden = null)
+    public void ReloadSceneWithLoading(bool isReplay = false)
     {
         if (isLoading) return;
 
         // Lưu callback vào static variable
-        staticOnLoadingComplete = onHidden;
+        if (isReplay)
+            staticOnLoadingComplete = ReplayGame;
 
         // Đặt flag để khi scene load lại sẽ tự động chạy loading
         shouldLoadOnStart = true;
 
         // Reload scene hiện tại
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    private void DefaultOnHidden()
+    {
+        UIManager.Instance.MainPanelGameobject.SetActive(true);
+        Time.timeScale = 1; // Tiếp tục thời gian khi đóng Pause Panel
+    }
+
+    private void ReplayGame()
+    {
+        Sequence seq = DOTween.Sequence();
+        seq.AppendInterval(0.5f);
+        seq.AppendCallback(() => StartGameCutScene.Instance.StartCutScene());
+        Time.timeScale = 1; // Tiếp tục thời gian khi chơi lại
     }
 
     private IEnumerator LoadingCoroutine()
@@ -108,6 +130,7 @@ public class SceneLoader : Singleton<SceneLoader>
             staticOnLoadingComplete.Invoke();
             staticOnLoadingComplete = null; // Reset callback
         }
+
     }
 
     /// <summary>

@@ -12,12 +12,6 @@ public class StartGameCutScene : Singleton<StartGameCutScene>
     private Transform playerPosition;
     private Rigidbody2D playerRigidbody;
 
-
-    void Start()
-    {
-        GetComponent();
-    }
-
     private void GetComponent()
     {
         playerGameObject = GameObject.FindGameObjectWithTag("Player");
@@ -27,6 +21,10 @@ public class StartGameCutScene : Singleton<StartGameCutScene>
 
     public void StartCutScene()
     {
+        if (playerGameObject == null || playerPosition == null || playerRigidbody == null)
+        {
+            GetComponent();
+        }
         Sequence sequence = DOTween.Sequence();
 
         sequence.AppendCallback(() =>

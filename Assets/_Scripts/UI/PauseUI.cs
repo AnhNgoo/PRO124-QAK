@@ -31,7 +31,7 @@ public class PauseUI : MainUI
 
     public void Home()
     {
-        HideThisPanel(() => SceneLoader.Instance.ReloadSceneWithLoading(() => UIManager.Instance.MainPanelGameobject.SetActive(true)));
+        HideThisPanel(() => SceneLoader.Instance.ReloadSceneWithLoading());
         Time.timeScale = 1; // Tiếp tục thời gian khi về Home
     }
 }

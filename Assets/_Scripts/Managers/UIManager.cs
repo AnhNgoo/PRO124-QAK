@@ -14,6 +14,7 @@ public class UIManager : Singleton<UIManager>
     public GameObject PausePanelGameobject;
     public GameObject ShopPanelGameobject;
     public GameObject InGamePanelGameobject;
+    public GameObject ResultPanelGameobject;
 
 
     //------------------------------------------
@@ -32,23 +33,22 @@ public class UIManager : Singleton<UIManager>
 
     //------------------------------------------
     [Header("-----UI Setting-----")]
-    public Toggle musicToggle;
-    public Toggle sfxToggle;
+    public Slider musicSlider; // Thanh trượt âm nhạc
+    public Slider sfxSlider; // Thanh trượt âm thanh hiệu ứng
 
     //Dotween Animation setting
     public DOTweenAnimation settingPanelDQ { get; private set; }
 
 
     //------------------------------------------
-    [Header("-----UI Pause-----")]
-    public int temp = 0; // Biến tạm để tránh lỗi không sử dụng
+    //UI Pause
     // Dotween Animation pause
     public DOTweenAnimation pausePanelDQ { get; private set; }
 
 
     //------------------------------------------
-    [Header("-----UI InGame-----")]
-
+    //UI Result 
+    public DOTweenAnimation resultPanelDQ { get; set; }
 
     //------------------------------------------
     [Header("-----UI Shop-----")]
@@ -85,18 +85,26 @@ public class UIManager : Singleton<UIManager>
     public float maxLoadingTime = 4f; // Thời gian loading tối đa
     public AnimationCurve loadingCurve = AnimationCurve.EaseInOut(0, 0, 1, 1); // Đường cong loading mượt mà
 
+    //------------------------------------------
 
     //Enum
     public enum StatePanel
     {
         Main,
         Pause,
+        Result
     }
     public StatePanel statePanel { get; set; } = StatePanel.Main;
 
     private void Start()
     {
+
         GetComponentDotween();
+    }
+
+    void Update()
+    {
+        Debug.Log("Current State Panel: " + statePanel);
     }
 
     private void GetComponentDotween()
@@ -117,5 +125,10 @@ public class UIManager : Singleton<UIManager>
         menuShopDQ = menuShopGameobject.GetComponent<DOTweenAnimation>();
         showItemPanelDQ = showItemPanelGameobject.GetComponent<DOTweenAnimation>();
         itemStatusDQ = itemStatusGameobject.GetComponent<DOTweenAnimation>();
+
+        //Result
+        resultPanelDQ = ResultPanelGameobject.GetComponent<DOTweenAnimation>();
     }
+
+
 }
