@@ -3274,12 +3274,57 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   musicSource: {fileID: 206862629}
   sfxSource: {fileID: 364411525}
-  audioClips: []
-  masterVolume: 1
+  audioClips:
+  - name: MainTheme
+    clip: {fileID: 8300000, guid: f0b5a39460d206b4b8ae7c209f05e55e, type: 3}
+    isMusic: 1
+    volume: 1
+  - name: InGame
+    clip: {fileID: 8300000, guid: 17b550cfefdc788449371e491b425061, type: 3}
+    isMusic: 1
+    volume: 1
+  - name: BossMusic
+    clip: {fileID: 8300000, guid: 17b550cfefdc788449371e491b425061, type: 3}
+    isMusic: 1
+    volume: 1
+  - name: ButtonPress
+    clip: {fileID: 8300000, guid: 5170c5b3719f62d4e9986e0ccf276095, type: 3}
+    isMusic: 0
+    volume: 1
+  - name: Coin
+    clip: {fileID: 8300000, guid: 8fdce31e423195941a9b87689d84b28f, type: 3}
+    isMusic: 0
+    volume: 1
+  - name: FootSteep
+    clip: {fileID: 8300000, guid: dbd1de62e22f1e14c9568df1d846c7f0, type: 3}
+    isMusic: 0
+    volume: 1
+  - name: CloseGame
+    clip: {fileID: 8300000, guid: 937df5571e5ca814ea0b4c880594b07d, type: 3}
+    isMusic: 0
+    volume: 1
+  - name: OpenGame
+    clip: {fileID: 8300000, guid: 3dbb49a2e7a8b07428ef4e702f12124d, type: 3}
+    isMusic: 0
+    volume: 1
+  - name: SaveGame
+    clip: {fileID: 8300000, guid: 63fc035ad26211f4381d18f4dbeb1881, type: 3}
+    isMusic: 0
+    volume: 1
+  - name: WarmingRocket
+    clip: {fileID: 8300000, guid: e37c1828379975d4bac3b25910747f73, type: 3}
+    isMusic: 0
+    volume: 1
+  - name: WarmingBoss
+    clip: {fileID: 8300000, guid: b75c2d5cd9c886e4caf869e73d233167, type: 3}
+    isMusic: 0
+    volume: 1
+  - name: PickUp
+    clip: {fileID: 8300000, guid: 315f3afa3fc4959429f5d01105d96cbb, type: 3}
+    isMusic: 0
+    volume: 1
   musicVolume: 1
   sfxVolume: 1
-  isMusicEnabled: 1
-  isSFXEnabled: 1
 --- !u!1 &521778640
 GameObject:
   m_ObjectHideFlags: 0
@@ -9919,7 +9964,6 @@ GameObject:
   - component: {fileID: 720120887}
   - component: {fileID: 720120886}
   - component: {fileID: 720120885}
-  - component: {fileID: 720120888}
   m_Layer: 0
   m_Name: CanvasGame
   m_TagString: Untagged
@@ -10015,24 +10059,6 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
---- !u!114 &720120888
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 720120883}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1c29c8f877ebffc4394184c26c931be3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  MainPanel: {fileID: 846927199}
-  SettingPanel: {fileID: 1490283111}
-  PausePanel: {fileID: 1177586434}
-  PauseButton: {fileID: 0}
-  musicToggle: {fileID: 0}
-  sfxToggle: {fileID: 0}
 --- !u!1 &746705808
 GameObject:
   m_ObjectHideFlags: 0

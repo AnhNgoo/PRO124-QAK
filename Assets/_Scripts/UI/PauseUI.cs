@@ -5,6 +5,13 @@ using UnityEngine;
 
 public class PauseUI : MainUI
 {
+    // Ghi đè Start() để không phát nhạc MainTheme khi mở pause panel
+    void Start()
+    {
+        // Không làm gì cả - không phát nhạc MainTheme như MainUI
+        // Giữ nguyên nhạc đang phát (InGame)
+    }
+    
     protected override void HideThisPanel(System.Action onHidden = null)
     {
         Sequence seq = DOTween.Sequence();
@@ -19,18 +26,36 @@ public class PauseUI : MainUI
 
     public void ResumeGame()
     {
+        // Chỉ phát SFX button press, không đổi nhạc
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlaySFX("ButtonPress");
+        }
+        
         HideThisPanel(() => UIManager.Instance.InGamePanelGameobject.SetActive(true));
         Time.timeScale = 1; // Tiếp tục thời gian khi đóng Pause Panel
     }
 
     public void _OpenSettingPanel()
     {
+        // Chỉ phát SFX button press, không đổi nhạc
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlaySFX("ButtonPress");
+        }
+        
         HideThisPanel(() => UIManager.Instance.SettingPanelGameobject.SetActive(true));
         Time.timeScale = 0;
     }
 
     public void Home()
     {
+        // Phát SFX button press
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlaySFX("ButtonPress");
+        }
+        
         HideThisPanel(() => SceneLoader.Instance.ReloadSceneWithLoading());
         Time.timeScale = 1; // Tiếp tục thời gian khi về Home
     }

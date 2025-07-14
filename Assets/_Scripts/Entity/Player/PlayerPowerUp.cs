@@ -11,6 +11,12 @@ public class PlayerPowerUp : MonoBehaviour
     {
         if (collision.CompareTag("PowerUp"))
         {
+            // Phát SFX pickup khi nhặt PowerUp
+            if (AudioManager.Instance != null)
+            {
+                AudioManager.Instance.PlaySFX("PickUp");
+            }
+            
             powerUpEvent?.Invoke(collision.gameObject.name);
             Debug.Log(collision.gameObject.name);
         }

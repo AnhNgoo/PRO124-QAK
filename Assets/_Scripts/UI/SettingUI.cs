@@ -19,6 +19,12 @@ public class SettingUI : MainUI
 
     public void Back()
     {
+        // Phát SFX button press
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlaySFX("ButtonPress");
+        }
+        
         if (UIManager.Instance.statePanel == UIManager.StatePanel.Pause)
         {
             HideThisPanel(() => UIManager.Instance.PausePanelGameobject.SetActive(true));
