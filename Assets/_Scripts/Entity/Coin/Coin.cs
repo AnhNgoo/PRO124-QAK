@@ -8,7 +8,18 @@ public class Coin : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
+            // Phát âm thanh coin
+            if (AudioManager.Instance != null)
+            {
+                AudioManager.Instance.PlaySFX("Coin");
+            }
+            
             //Tăng số lượng xu ở đây
+            if (GameManager.Instance != null)
+            {
+                GameManager.Instance.coins++;
+            }
+            
             gameObject.SetActive(false);
         }
     }

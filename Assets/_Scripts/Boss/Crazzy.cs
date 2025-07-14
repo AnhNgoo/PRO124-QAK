@@ -51,6 +51,12 @@ public class Crazzy : MonoBehaviour
         sequence.AppendCallback(() =>
         {
             crazzy.position = transform.position;
+            
+            // Phát âm thanh cảnh báo boss
+            if (AudioManager.Instance != null)
+            {
+                AudioManager.Instance.PlaySFX("WarmingBoss");
+            }
         });
 
         sequence.Append(crazzy
@@ -61,6 +67,13 @@ public class Crazzy : MonoBehaviour
 
         sequence.AppendCallback(() =>
         {
+            // Dừng nhạc trong game và phát nhạc boss
+            if (AudioManager.Instance != null)
+            {
+                AudioManager.Instance.StopMusic();
+                AudioManager.Instance.PlayMusic("BossMusic");
+            }
+            
             StartCoroutine(Attack());
         });
         sequence.JoinCallback(() =>
@@ -134,7 +147,6 @@ public class Crazzy : MonoBehaviour
     {
         Sequence sequence = DOTween.Sequence();
 
-
         StopAllCoroutines();
         sequence.AppendCallback(() =>
         {
@@ -150,6 +162,17 @@ public class Crazzy : MonoBehaviour
         sequence.Append(crazzy
                            .DOMove(transform.position, 1f)
                            .SetEase(Ease.InBack));
+        
+        // Phát lại nhạc trong game ngay lập tức khi boss bắt đầu rời đi
+        sequence.AppendCallback(() =>
+        {
+            if (AudioManager.Instance != null)
+            {
+                AudioManager.Instance.StopMusic();
+                AudioManager.Instance.PlayMusic("InGame");
+            }
+        });
+        
         sequence.AppendInterval(1f);
         sequence.AppendCallback(() =>
         {
