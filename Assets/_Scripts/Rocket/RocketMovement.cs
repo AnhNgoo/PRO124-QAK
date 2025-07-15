@@ -24,15 +24,19 @@ public class RocketMovement : MonoBehaviour
     }
     void StartMove()
     {
-
         Sequence sequence = DOTween.Sequence();
-
 
         sequence.AppendCallback(() =>
         {
             rocket.gameObject.SetActive(true);
             rocket.position = transform.position;
             warning.SetActive(true);
+            
+            // Phát âm thanh cảnh báo rocket
+            if (AudioManager.Instance != null)
+            {
+                AudioManager.Instance.PlaySFX("WarmingRocket");
+            }
         });
 
         sequence.Append(warningSprite

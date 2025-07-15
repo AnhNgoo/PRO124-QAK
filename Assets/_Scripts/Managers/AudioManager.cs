@@ -23,14 +23,9 @@ public class AudioManager : Singleton<AudioManager>
     
     [Header("Settings")]
     [Range(0f, 1f)]
-    public float masterVolume = 1f;
-    [Range(0f, 1f)]
     public float musicVolume = 1f;
     [Range(0f, 1f)]
     public float sfxVolume = 1f;
-    
-    public bool isMusicEnabled = true;
-    public bool isSFXEnabled = true;
     
     private Dictionary<string, AudioClipData> audioDict = new Dictionary<string, AudioClipData>();
     
@@ -39,6 +34,44 @@ public class AudioManager : Singleton<AudioManager>
         InitializeAudioDictionary();
         LoadAudioSettings();
         UpdateAudioVolumes();
+        SetupSliders();
+        
+        // Đảm bảo có tất cả âm thanh cần thiết
+        ValidateAudioClips();
+    }
+    
+    void Update()
+    {
+        // Đồng bộ hóa với UIManager sliders mỗi frame (tùy chọn)
+        // Uncomment nếu muốn sync liên tục
+        // SyncWithUIManager();
+    }
+    
+    private void SetupSliders()
+    {
+        // Thiết lập slider từ UIManager
+        if (UIManager.Instance != null)
+        {
+            if (UIManager.Instance.musicSlider != null)
+            {
+                // Đặt giá trị từ AudioManager lên slider
+                UIManager.Instance.musicSlider.value = musicVolume;
+                // Thêm listener để cập nhật AudioManager khi slider thay đổi
+                UIManager.Instance.musicSlider.onValueChanged.AddListener(SetMusicVolume);
+            }
+            
+            if (UIManager.Instance.sfxSlider != null)
+            {
+                // Đặt giá trị từ AudioManager lên slider
+                UIManager.Instance.sfxSlider.value = sfxVolume;
+                // Thêm listener để cập nhật AudioManager khi slider thay đổi
+                UIManager.Instance.sfxSlider.onValueChanged.AddListener(SetSFXVolume);
+            }
+        }
+        else
+        {
+            Debug.LogWarning("UIManager instance not found! Audio sliders won't be connected.");
+        }
     }
     
     private void InitializeAudioDictionary()
@@ -55,14 +88,14 @@ public class AudioManager : Singleton<AudioManager>
     // Phát âm thanh SFX
     public void PlaySFX(string clipName)
     {
-        if (!isSFXEnabled) return;
+        if (sfxVolume <= 0) return;
         
         if (audioDict.ContainsKey(clipName))
         {
             AudioClipData data = audioDict[clipName];
             if (!data.isMusic)
             {
-                sfxSource.PlayOneShot(data.clip, data.volume * sfxVolume * masterVolume);
+                sfxSource.PlayOneShot(data.clip, data.volume * sfxVolume);
             }
         }
         else
@@ -74,7 +107,7 @@ public class AudioManager : Singleton<AudioManager>
     // Phát nhạc nền
     public void PlayMusic(string clipName, bool loop = true)
     {
-        if (!isMusicEnabled) return;
+        if (musicVolume <= 0) return;
         
         if (audioDict.ContainsKey(clipName))
         {
@@ -82,7 +115,7 @@ public class AudioManager : Singleton<AudioManager>
             if (data.isMusic)
             {
                 musicSource.clip = data.clip;
-                musicSource.volume = data.volume * musicVolume * masterVolume;
+                musicSource.volume = data.volume * musicVolume;
                 musicSource.loop = loop;
                 musicSource.Play();
             }
@@ -111,13 +144,6 @@ public class AudioManager : Singleton<AudioManager>
     }
     
     // Cập nhật volume
-    public void SetMasterVolume(float volume)
-    {
-        masterVolume = volume;
-        UpdateAudioVolumes();
-        SaveAudioSettings();
-    }
-    
     public void SetMusicVolume(float volume)
     {
         musicVolume = volume;
@@ -132,52 +158,140 @@ public class AudioManager : Singleton<AudioManager>
         SaveAudioSettings();
     }
     
-    // Toggle music/sfx
-    public void ToggleMusic(bool enabled)
+    // Đồng bộ hóa giá trị từ UIManager sliders
+    public void SyncWithUIManager()
     {
-        isMusicEnabled = enabled;
-        if (!enabled)
+        if (UIManager.Instance != null)
         {
-            musicSource.volume = 0;
-        }
-        else
-        {
+            if (UIManager.Instance.musicSlider != null)
+            {
+                musicVolume = UIManager.Instance.musicSlider.value;
+            }
+            
+            if (UIManager.Instance.sfxSlider != null)
+            {
+                sfxVolume = UIManager.Instance.sfxSlider.value;
+            }
+            
             UpdateAudioVolumes();
+            SaveAudioSettings();
         }
-        SaveAudioSettings();
     }
     
-    public void ToggleSFX(bool enabled)
+    // Lấy giá trị hiện tại từ UIManager
+    public float GetMusicVolumeFromUI()
     {
-        isSFXEnabled = enabled;
-        SaveAudioSettings();
+        if (UIManager.Instance != null && UIManager.Instance.musicSlider != null)
+        {
+            return UIManager.Instance.musicSlider.value;
+        }
+        return musicVolume;
+    }
+    
+    public float GetSFXVolumeFromUI()
+    {
+        if (UIManager.Instance != null && UIManager.Instance.sfxSlider != null)
+        {
+            return UIManager.Instance.sfxSlider.value;
+        }
+        return sfxVolume;
     }
     
     private void UpdateAudioVolumes()
     {
-        if (musicSource.clip != null && isMusicEnabled)
+        if (musicSource.clip != null)
         {
-            musicSource.volume = musicVolume * masterVolume;
+            // Cập nhật volume cho music source hiện tại
+            musicSource.volume = musicVolume;
+        }
+        
+        // Cập nhật slider values nếu UIManager có sẵn
+        if (UIManager.Instance != null)
+        {
+            if (UIManager.Instance.musicSlider != null)
+            {
+                UIManager.Instance.musicSlider.value = musicVolume;
+            }
+            
+            if (UIManager.Instance.sfxSlider != null)
+            {
+                UIManager.Instance.sfxSlider.value = sfxVolume;
+            }
         }
     }
     
     // Save/Load settings
     private void SaveAudioSettings()
     {
-        PlayerPrefs.SetFloat("MasterVolume", masterVolume);
         PlayerPrefs.SetFloat("MusicVolume", musicVolume);
         PlayerPrefs.SetFloat("SFXVolume", sfxVolume);
-        PlayerPrefs.SetInt("MusicEnabled", isMusicEnabled ? 1 : 0);
-        PlayerPrefs.SetInt("SFXEnabled", isSFXEnabled ? 1 : 0);
         PlayerPrefs.Save();
     }
     
     private void LoadAudioSettings()
     {
-        masterVolume = PlayerPrefs.GetFloat("MasterVolume", 1f);
         musicVolume = PlayerPrefs.GetFloat("MusicVolume", 1f);
         sfxVolume = PlayerPrefs.GetFloat("SFXVolume", 1f);
-        isMusicEnabled = PlayerPrefs.GetInt("MusicEnabled", 1) == 1;
-        isSFXEnabled = PlayerPrefs.GetInt("SFXEnabled", 1) == 1;
+    }
+    
+    // Kiểm tra kết nối với UIManager
+    public bool IsConnectedToUIManager()
+    {
+        return UIManager.Instance != null && 
+               UIManager.Instance.musicSlider != null && 
+               UIManager.Instance.sfxSlider != null;
+    }
+    
+    // Debug: In thông tin kết nối
+    public void LogUIManagerConnection()
+    {
+        if (UIManager.Instance == null)
+        {
+            Debug.LogWarning("UIManager.Instance is null!");
+            return;
+        }
+        
+        Debug.Log($"UIManager connected: {UIManager.Instance != null}");
+        Debug.Log($"Music Slider connected: {UIManager.Instance.musicSlider != null}");
+        Debug.Log($"SFX Slider connected: {UIManager.Instance.sfxSlider != null}");
+        
+        if (UIManager.Instance.musicSlider != null)
+        {
+            Debug.Log($"Music Slider value: {UIManager.Instance.musicSlider.value}");
+        }
+        
+        if (UIManager.Instance.sfxSlider != null)
+        {
+            Debug.Log($"SFX Slider value: {UIManager.Instance.sfxSlider.value}");
+        }
+    }
+    
+    // Kiểm tra có đủ âm thanh cần thiết không
+    private void ValidateAudioClips()
+    {
+        string[] requiredSFX = {
+            "FootStep", "Coin", "CloseGame", "OpenGame", "ButtonPress", 
+            "WarmingRocket", "WarmingBoss"
+        };
+        
+        string[] requiredMusic = {
+            "MainTheme", "InGame", "BossMusic"
+        };
+        
+        foreach (string sfx in requiredSFX)
+        {
+            if (!audioDict.ContainsKey(sfx))
+            {
+                Debug.LogWarning($"Missing SFX: {sfx}");
+            }
+        }
+        
+        foreach (string music in requiredMusic)
+        {
+            if (!audioDict.ContainsKey(music))
+            {
+                Debug.LogWarning($"Missing Music: {music}");
+            }
+        }
     }
 }
