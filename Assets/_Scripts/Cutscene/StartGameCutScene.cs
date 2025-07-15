@@ -32,6 +32,7 @@ public class StartGameCutScene : Singleton<StartGameCutScene>
             CutSceneBlocker.Instance.isCutSceneActive = true;
             MapSpawner.Instance.SetScrollSpeed(0);
             playerRigidbody.gravityScale = 0f;
+
         });
         //Di chuyển map sang trái
         sequence.Append(Map
@@ -69,6 +70,10 @@ public class StartGameCutScene : Singleton<StartGameCutScene>
             playerRigidbody.gravityScale = 7f;
             CutSceneBlocker.Instance.isCutSceneActive = false;
             UIManager.Instance.InGamePanelGameobject.SetActive(true);
+
+            DistanceTracker.Instance.ResetDistance();
+            GameManager.Instance.coinIngame = 0; // Reset coin count at the start of the game
+            DistanceTracker.Instance.isStopped = false; // Dừng distance tracking
         });
     }
 }

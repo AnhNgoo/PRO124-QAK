@@ -1784,11 +1784,17 @@ MonoBehaviour:
   quitButtonGameobject: {fileID: 58732162}
   musicSlider: {fileID: 1894642450}
   sfxSlider: {fileID: 1348174510}
+  resultCoinIngameText: {fileID: 1385417650}
+  resultDistanceTraveledText: {fileID: 1494513416}
+  distanceTraveledText: {fileID: 910734265}
+  distanceBestText: {fileID: 1496154178}
+  coinIngameText: {fileID: 750294306}
   lockedSprite: {fileID: -117086914, guid: 8cd0279ff939c2d429445ea99f90197e, type: 3}
   unlockedSprite: {fileID: -1311587167, guid: 8cd0279ff939c2d429445ea99f90197e, type: 3}
   itemImage: {fileID: 1349534839822170051}
   itemNameText: {fileID: 6916478409087560545}
   itemPriceText: {fileID: 8260025406133805802}
+  coinTotalText: {fileID: 1822558405}
   itemUnlockButtonGameobject: {fileID: 3189017816926395464}
   itemUnlockButtonText: {fileID: 3520769730222638589}
   menuShopGameobject: {fileID: 352556383207774924}
@@ -9084,8 +9090,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: ecb0ff7c52734e0419c0c2646b6c85df, type: 3}
-  m_Color: {r: 0, g: 0.8659086, b: 1, a: 1}
+  m_Sprite: {fileID: 21300000, guid: b67f316abd9ed504d93f4cb3cee64178, type: 3}
+  m_Color: {r: 0, g: 0.8659086, b: 1, a: 0.39215687}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -9472,7 +9478,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 50, y: -200}
+  m_AnchoredPosition: {x: 35, y: -200}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &709189422
@@ -28968,7 +28974,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f78264679f40ac4aaaebaf5ec26a81a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  coins: 0
+  coinTotal: 0
+  coinIngame: 0
+  distanceBest: 0
 --- !u!1 &1385417648
 GameObject:
   m_ObjectHideFlags: 0
@@ -36691,8 +36699,8 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 7
---- !u!61 &1880990179
-BoxCollider2D:
+--- !u!58 &1880990179
+CircleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -36724,18 +36732,8 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0, y: 0}
-    oldSize: {x: 0, y: 0}
-    newSize: {x: 0, y: 0}
-    adaptiveTilingThreshold: 0
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 10, y: 30}
-  m_EdgeRadius: 0
+  m_Radius: 20
 --- !u!1 &1894536997
 GameObject:
   m_ObjectHideFlags: 0

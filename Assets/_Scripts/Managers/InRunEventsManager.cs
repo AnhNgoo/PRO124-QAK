@@ -16,7 +16,7 @@ public class InRunEventsManager : Singleton<InRunEventsManager>
 
     private float nextSmallEventDistance = 0;
     private float nextBigEventDistance = 0;
-    private bool isBigEventActive = false;
+    public bool isBigEventActive { get; set; } = false;
 
     void Start()
     {

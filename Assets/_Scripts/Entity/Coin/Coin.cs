@@ -9,6 +9,7 @@ public class Coin : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             //Tăng số lượng xu ở đây
+            GameManager.Instance.coinIngame++;
             gameObject.SetActive(false);
         }
     }
