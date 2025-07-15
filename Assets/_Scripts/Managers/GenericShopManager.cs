@@ -97,9 +97,9 @@ public class GenericShopManager<T> where T : IShopItem
         var item = itemData.itemList.FirstOrDefault(i => i.Name == currentItemName);
         if (item == null || item.IsUnlocked) return;
 
-        if (GameManager.Instance.coins >= item.Price)
+        if (GameManager.Instance.coinTotal >= item.Price)
         {
-            GameManager.Instance.coins -= item.Price;
+            GameManager.Instance.coinTotal -= item.Price;
             item.IsUnlocked = true;
             SelectItem();
         }

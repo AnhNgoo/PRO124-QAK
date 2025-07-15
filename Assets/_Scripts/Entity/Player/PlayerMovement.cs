@@ -29,7 +29,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (CutSceneBlocker.Instance.isCutSceneActive) return;
 
-        if (Input.GetKey(KeyCode.Space))
+        if (Input.GetKey(KeyCode.Space) || Input.GetMouseButton(0))
         {
             if (rb.velocity.y < maxVerticalSpeed)
             {
@@ -49,7 +49,8 @@ public class PlayerMovement : MonoBehaviour
 
     void HandleGravityBoost()
     {
-        if (!Input.GetKey(KeyCode.Space) && rb.velocity.y > 0)
+        if (CutSceneBlocker.Instance.isCutSceneActive) return;
+        if (!Input.GetKey(KeyCode.Space) || !Input.GetMouseButton(0) && rb.velocity.y > 0)
         {
             rb.velocity += Vector2.down * gravityMultiplier * Time.deltaTime;
         }

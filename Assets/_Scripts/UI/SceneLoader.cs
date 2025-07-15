@@ -43,6 +43,8 @@ public class SceneLoader : Singleton<SceneLoader>
     /// </summary>
     public void ReloadSceneWithLoading(bool isReplay = false)
     {
+        DOTween.KillAll();
+        DOTween.Clear();
         if (isLoading) return;
 
         // Lưu callback vào static variable

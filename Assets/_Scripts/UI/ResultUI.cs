@@ -32,6 +32,6 @@ public class ResultUI : MainUI
     public void OpenShop()
     {
         HideThisPanel(() => UIManager.Instance.ShopPanelGameobject.SetActive(true));
-        Time.timeScale = 0; // Dừng thời gian khi mở Shop Panel
+        Time.timeScale = 1; // Dừng thời gian khi mở Shop Panel
     }
 }

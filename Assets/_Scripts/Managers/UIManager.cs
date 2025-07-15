@@ -47,8 +47,16 @@ public class UIManager : Singleton<UIManager>
 
 
     //------------------------------------------
-    //UI Result 
+    [Header("-----UI Result-----")]
+    public TextMeshProUGUI resultCoinIngameText; // Hiển thị số lượng coin trong game
+    public TextMeshProUGUI resultDistanceTraveledText; // Hiển thị khoảng cách đã di chuyển
     public DOTweenAnimation resultPanelDQ { get; set; }
+
+    //-------------------------------------------
+    [Header("-----UI InGame-----")]
+    public TextMeshProUGUI distanceTraveledText; // Hiển thị khoảng cách đã di chuyển
+    public TextMeshProUGUI distanceBestText; // Hiển thị khoảng cách tốt nhất
+    public TextMeshProUGUI coinIngameText; // Hiển thị số lượng coin trong game
 
     //------------------------------------------
     [Header("-----UI Shop-----")]
@@ -59,6 +67,7 @@ public class UIManager : Singleton<UIManager>
     public Image itemImage;
     public TextMeshProUGUI itemNameText;
     public TextMeshProUGUI itemPriceText;
+    public TextMeshProUGUI coinTotalText; // Hiển thị tổng số coin
 
     [Header("Button")]
     public GameObject itemUnlockButtonGameobject;
@@ -104,7 +113,7 @@ public class UIManager : Singleton<UIManager>
 
     void Update()
     {
-        Debug.Log("Current State Panel: " + statePanel);
+        UpdateDisplayUI();
     }
 
     private void GetComponentDotween()
@@ -130,5 +139,18 @@ public class UIManager : Singleton<UIManager>
         resultPanelDQ = ResultPanelGameobject.GetComponent<DOTweenAnimation>();
     }
 
+    private void UpdateDisplayUI()
+    {
+        //Shop
+        coinTotalText.text = GameManager.Instance.coinTotal.ToString();
 
+        //InGame
+        distanceTraveledText.text = GameManager.Instance.distanceTraveled.ToString() + "M";
+        distanceBestText.text = GameManager.Instance.distanceBest.ToString() + "M";
+        coinIngameText.text = GameManager.Instance.coinIngame.ToString();
+
+        //Result
+        resultCoinIngameText.text = GameManager.Instance.coinIngame.ToString();
+        resultDistanceTraveledText.text = GameManager.Instance.distanceTraveled.ToString() + "M";
+    }
 }

@@ -13,13 +13,9 @@ public class Coin : MonoBehaviour
             {
                 AudioManager.Instance.PlaySFX("Coin");
             }
-            
+
             //Tăng số lượng xu ở đây
-            if (GameManager.Instance != null)
-            {
-                GameManager.Instance.coins++;
-            }
-            
+            GameManager.Instance.coinIngame++;
             gameObject.SetActive(false);
         }
     }

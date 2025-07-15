@@ -5,10 +5,10 @@ using UnityEngine;
 public class DistanceTracker : Singleton<DistanceTracker>
 {
     public float distanceTraveled { get; set; }
-
+    public bool isStopped { get; set; } = false;
     private void Update()
     {
-        if (CutSceneBlocker.Instance.isCutSceneActive) return;
+        if (CutSceneBlocker.Instance.isCutSceneActive || isStopped) return;
 
         distanceTraveled += MapSpawner.Instance.scrollSpeed * Time.deltaTime;
     }

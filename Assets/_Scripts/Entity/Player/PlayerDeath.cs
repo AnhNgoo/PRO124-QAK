@@ -23,6 +23,7 @@ public class PlayerDeath : MonoBehaviour
 
     public void Death()
     {
+        DistanceTracker.Instance.isStopped = true; // Dừng theo dõi khoảng cách khi người chơi chết
         smoke.SetActive(true);
         smoke.transform.position = transform.position;
 
