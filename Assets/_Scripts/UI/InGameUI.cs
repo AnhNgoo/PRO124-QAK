@@ -32,7 +32,13 @@ public class InGameUI : MainUI
     private void OpenResultPanel()
     {
         // Update properties ngay lập tức
-        GameManager.Instance.UpdateProperties();
+        if (GameManager.Instance.sessionState == GameManager.SessionState.InProgress)
+        {
+            GameManager.Instance.UpdateProperties();
+            GameManager.Instance.sessionState = GameManager.SessionState.Finished; // Đánh dấu phiên chơi đã kết thúc
+            SaveManager.Instance.Save(); // Lưu dữ liệu ngay khi người chơi chết
+        }
+
 
         // Delay 2s rồi hiện ResultPanel
         DOVirtual.DelayedCall(2f, () =>

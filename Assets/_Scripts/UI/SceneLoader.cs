@@ -47,6 +47,8 @@ public class SceneLoader : Singleton<SceneLoader>
         DOTween.Clear();
         if (isLoading) return;
 
+        SaveManager.Instance.Save(); // Lưu dữ liệu trước khi reload
+
         // Lưu callback vào static variable
         if (isReplay)
             staticOnLoadingComplete = ReplayGame;
@@ -60,12 +62,25 @@ public class SceneLoader : Singleton<SceneLoader>
 
     private void DefaultOnHidden()
     {
-        UIManager.Instance.MainPanelGameobject.SetActive(true);
+
         Time.timeScale = 1; // Tiếp tục thời gian khi đóng Pause Panel
+        UIManager.Instance.MainPanelGameobject.SetActive(true);
+        // Phát SFX khi mở game
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlaySFX("OpenGame");
+        }
+
     }
 
     private void ReplayGame()
     {
+        // Dừng nhạc chủ đề và phát nhạc trong game
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.StopMusic();
+            AudioManager.Instance.PlayMusic("InGame");
+        }
         Sequence seq = DOTween.Sequence();
         seq.AppendInterval(0.5f);
         seq.AppendCallback(() => StartGameCutScene.Instance.StartCutScene());
@@ -126,12 +141,14 @@ public class SceneLoader : Singleton<SceneLoader>
 
         isLoading = false;
 
-        // Gọi static callback và reset nó
+        //Gọi hàm bật mainmenu hoặc callback đã gán
         if (staticOnLoadingComplete != null)
         {
             staticOnLoadingComplete.Invoke();
             staticOnLoadingComplete = null; // Reset callback
         }
+
+        SaveManager.Instance.Load();
 
     }
 

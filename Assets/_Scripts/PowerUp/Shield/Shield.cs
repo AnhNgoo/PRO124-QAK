@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Shield : MonoBehaviour
+public class Shield : MonoBehaviour, IPowerUp
 {
     public float lifeTime = 30;
 
@@ -11,20 +11,15 @@ public class Shield : MonoBehaviour
     private GameObject powerUpManager;
 
 
-    private void OnEnable()
-    {
-        Init();
-    }
-
     void Update()
     {
         lifeTime -= Time.deltaTime;
         Disable();
     }
 
-    private void Init()
+    public void Init(float duration)
     {
-        lifeTime = 30; // Reset thời gian sống khi kích hoạt lại
+        lifeTime = duration; // Reset thời gian sống khi kích hoạt lại
 
         player = GameObject.FindGameObjectWithTag("Player");
         powerUpManager = GameObject.Find("PowerUpManager");
@@ -36,11 +31,17 @@ public class Shield : MonoBehaviour
 
     private void Disable()
     {
-        if (lifeTime <= 0)
-        {
-            gameObject.SetActive(false);
-            gameObject.transform.SetParent(powerUpManager.transform);
-            isActive = false;
-        }
+        if (lifeTime > 3 && !InRunEventsManager.Instance.isBigEventActive) return;
+        PowerUpDisplay.Instance.TimeOutWarning(gameObject.name);
+
+        if (lifeTime > 0 && !InRunEventsManager.Instance.isBigEventActive) return;
+
+        // Dừng tất cả coroutines
+        StopAllCoroutines();
+        gameObject.SetActive(false);
+        gameObject.transform.SetParent(powerUpManager.transform);
+        PowerUpDisplay.Instance.HidePowerUp(gameObject.name);
+        isActive = false;
+
     }
 }
