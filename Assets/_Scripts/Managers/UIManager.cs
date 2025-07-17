@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using DG.Tweening;
+using System.Linq;
 
 public class UIManager : Singleton<UIManager>
 {
@@ -15,6 +16,7 @@ public class UIManager : Singleton<UIManager>
     public GameObject ShopPanelGameobject;
     public GameObject InGamePanelGameobject;
     public GameObject ResultPanelGameobject;
+    public GameObject FailedPurchasePanelGameobject; // Canvas hiển thị thông báo cần thêm coin
 
 
     //------------------------------------------
@@ -23,8 +25,10 @@ public class UIManager : Singleton<UIManager>
     public GameObject shopButtonGameobject; // Nút vào shop
     public GameObject settingButtonGameobject; // Nút vào setting
     public GameObject quitButtonGameobject; // Nút thoát game
+    public GameObject LogoGameobject; // Logo game
 
     //Dotween Animation main
+    public DOTweenAnimation LogoGameDQ { get; private set; }
     public DOTweenAnimation playButtonDQ { get; private set; }
     public DOTweenAnimation shopButtonDQ { get; private set; }
     public DOTweenAnimation settingButtonDQ { get; private set; }
@@ -95,7 +99,6 @@ public class UIManager : Singleton<UIManager>
     public AnimationCurve loadingCurve = AnimationCurve.EaseInOut(0, 0, 1, 1); // Đường cong loading mượt mà
 
     //------------------------------------------
-
     //Enum
     public enum StatePanel
     {
@@ -124,6 +127,9 @@ public class UIManager : Singleton<UIManager>
         settingButtonDQ = settingButtonGameobject.GetComponent<DOTweenAnimation>();
         quitButtonDQ = quitButtonGameobject.GetComponent<DOTweenAnimation>();
 
+        DOTweenAnimation[] anim = LogoGameobject.GetComponents<DOTweenAnimation>();
+        LogoGameDQ = anim.FirstOrDefault(a => a.id == "MoveLogo");
+
         //Setting
         settingPanelDQ = SettingPanelGameobject.GetComponent<DOTweenAnimation>();
 
@@ -146,7 +152,12 @@ public class UIManager : Singleton<UIManager>
 
         //InGame
         distanceTraveledText.text = GameManager.Instance.distanceTraveled.ToString() + "M";
-        distanceBestText.text = GameManager.Instance.distanceBest.ToString() + "M";
+
+        if (GameManager.Instance.distanceBest > GameManager.Instance.distanceTraveled)
+            distanceBestText.text = "Best: " + GameManager.Instance.distanceBest.ToString() + "M";
+        else
+            distanceBestText.text = "Best: " + GameManager.Instance.distanceTraveled.ToString() + "M";
+
         coinIngameText.text = GameManager.Instance.coinIngame.ToString();
 
         //Result

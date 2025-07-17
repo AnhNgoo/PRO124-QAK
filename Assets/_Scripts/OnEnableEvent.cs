@@ -5,6 +5,7 @@ public class OnEnableEvent : MonoBehaviour
 {
     public UnityEvent onEnabled;
 
+    //LoadShop mỗi khi bật
     void OnEnable()
     {
         if (onEnabled != null)

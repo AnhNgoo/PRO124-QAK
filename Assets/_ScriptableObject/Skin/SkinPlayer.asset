@@ -27,10 +27,10 @@ MonoBehaviour:
     sprite: {fileID: -1675684641, guid: e1be965e5c639e140ad9404f6f0236f3, type: 3}
     skinName: IronBoy
     price: 2000
-    status: 0
+    status: 1
   - spriteLibraryAsset: {fileID: 7108339969198208228, guid: 8f6b80c2bf7036f4484c4b9bf5593024, type: 3}
     sprite: {fileID: -1697775293, guid: 0243a899b7dbafe418b0846185b8b0e4, type: 3}
     skinName: Robot
     price: 2000
     status: 1
-  currentItemName: IronBoy
+  currentItemName: JetBoy

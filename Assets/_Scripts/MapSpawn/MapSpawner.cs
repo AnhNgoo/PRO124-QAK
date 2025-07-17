@@ -11,7 +11,7 @@ public class MapSpawner : Singleton<MapSpawner>
     public float scrollSpeedLimit = 35f; // Giới hạn tốc độ cuộn
     public float durationStop = 1f;
     public float increaseAmount = 0.1f; // Tăng tốc độ cuộn
-    public float powerUpSpawnDistance = 100f; // Khoảng cách để spawn PowerUp
+
 
     public List<GameObject> mapPrefab;
 
@@ -19,11 +19,11 @@ public class MapSpawner : Singleton<MapSpawner>
     private PlayerController playerController;
     private Vector3 StartSpawnMapPoint = new Vector3(-1.7f, 0, 0);
     private GameObject previousMap;
-    private GameObject currentMap;
+    public GameObject currentMap { get; set; }
     private GameObject nextMap;
     private int currentMapIndex = 0;
     private int nextMapIndex = -1;
-    private float nextPowerUpSpawnDistance = 0f;
+
     private float countdown = 0f; // Biến đếm thời gian để tăng tốc độ
 
     //Thêm prefab vào pool
@@ -46,7 +46,6 @@ public class MapSpawner : Singleton<MapSpawner>
     }
     void Start()
     {
-        nextPowerUpSpawnDistance = powerUpSpawnDistance;
         AddListPrefabToPoolAndSetParents();
         InitMap();
         GetComponent();
@@ -56,7 +55,6 @@ public class MapSpawner : Singleton<MapSpawner>
     {
         MoveMap();
         UpdateMap();
-        SpawnPowerUpByDistance();
         IncreaseScrollSpeed();
     }
 
@@ -166,20 +164,12 @@ public class MapSpawner : Singleton<MapSpawner>
 
 
         countdown += Time.deltaTime;
-        if (countdown <= 1) return;
+        if (countdown < 1) return;
         countdown = 0f; // Reset countdown
 
         scrollSpeed += increaseAmount;
     }
 
-    private void SpawnPowerUpByDistance()
-    {
-        if (DistanceTracker.Instance.distanceTraveled >= nextPowerUpSpawnDistance)
-        {
-            nextPowerUpSpawnDistance += powerUpSpawnDistance;
-            currentMap.GetComponent<ResetMap>().SpawnPowerUp();
-            Debug.Log("Da spawn");
-        }
-    }
+
 }
 //Anh Khoa
