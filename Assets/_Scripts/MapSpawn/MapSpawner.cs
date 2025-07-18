@@ -1,8 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Rendering.LookDev;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class MapSpawner : Singleton<MapSpawner>
 {
@@ -11,13 +9,12 @@ public class MapSpawner : Singleton<MapSpawner>
     public float scrollSpeedLimit = 35f; // Giới hạn tốc độ cuộn
     public float durationStop = 1f;
     public float increaseAmount = 0.1f; // Tăng tốc độ cuộn
-
-
+    public Vector3 StartSpawnMapPoint = new Vector3(-5f, 0, 0);
     public List<GameObject> mapPrefab;
 
     //Private
     private PlayerController playerController;
-    private Vector3 StartSpawnMapPoint = new Vector3(-1.7f, 0, 0);
+
     private GameObject previousMap;
     public GameObject currentMap { get; set; }
     private GameObject nextMap;
