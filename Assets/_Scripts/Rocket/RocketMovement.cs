@@ -59,7 +59,6 @@ public class RocketMovement : MonoBehaviour
         // Tính duration tỉ lệ nghịch với scrollSpeed, giới hạn trong [1, 2]
         float scrollSpeed = MapSpawner.Instance.scrollSpeed;
         float duration = Mathf.Clamp(2f / scrollSpeed, 1f, 2f);
-        Debug.Log($"GetDuration trả về: {duration} với scrollSpeed: {scrollSpeed}");
         return duration;
     }
 }

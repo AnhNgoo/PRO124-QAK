@@ -1,6 +1,7 @@
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
 
 public class GenericShopManager<T> where T : IShopItem
 {
@@ -97,15 +98,39 @@ public class GenericShopManager<T> where T : IShopItem
         var item = itemData.itemList.FirstOrDefault(i => i.Name == currentItemName);
         if (item == null || item.IsUnlocked) return;
 
-        if (GameManager.Instance.coins >= item.Price)
+        if (GameManager.Instance.coinTotal >= item.Price)
         {
-            GameManager.Instance.coins -= item.Price;
-            item.IsUnlocked = true;
-            SelectItem();
+            // Phát SFX bắt đầu mua hàng
+            if (AudioManager.Instance != null)
+                AudioManager.Instance.PlaySFX("PurchaseStart");
+            UIManager.Instance.itemUnlockButtonGameobject.SetActive(false);
+            // Lưu giá trị ban đầu và target
+            int startCoin = GameManager.Instance.coinTotal;
+            int targetCoin = GameManager.Instance.coinTotal - item.Price;
+
+            // Tạo hiệu ứng trừ tiền từ từ
+            DOTween.To(() => (float)startCoin, x =>
+            {
+                int currentCoin = Mathf.RoundToInt(x);
+                GameManager.Instance.coinTotal = currentCoin;
+
+                // Cập nhật UI coin - sử dụng coinTotalText thay vì coinText
+                if (UIManager.Instance.coinTotalText != null)
+                    UIManager.Instance.coinTotalText.text = currentCoin.ToString();
+
+            }, (float)targetCoin, 1f) // Cast to float
+            .SetEase(Ease.OutQuart)
+            .OnComplete(() =>
+            {
+                // Khi hoàn thành việc trừ tiền
+                item.IsUnlocked = true;
+                SelectItem();
+            });
         }
         else
         {
-            Debug.Log("Not enough coins!");
+            UIManager.Instance.FailedPurchasePanelGameobject.SetActive(false);
+            UIManager.Instance.FailedPurchasePanelGameobject.SetActive(true);
         }
     }
 

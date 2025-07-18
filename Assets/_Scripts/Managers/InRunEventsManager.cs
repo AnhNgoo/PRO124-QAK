@@ -11,12 +11,12 @@ public class InRunEventsManager : Singleton<InRunEventsManager>
     public GameObject warning;
     public GameObject obstacleBlock;
 
-    private float smallEventDistance = 500f;
-    private float bigEventDistance = 5000f;
+    public float smallEventDistance = 500f;
+    public float bigEventDistance = 5000f;
 
     private float nextSmallEventDistance = 0;
     private float nextBigEventDistance = 0;
-    private bool isBigEventActive = false;
+    public bool isBigEventActive { get; set; } = false;
 
     void Start()
     {

@@ -31,15 +31,24 @@ public class InGameUI : MainUI
     //Mở Result Panel khi người chơi chết
     private void OpenResultPanel()
     {
-        Sequence seq = DOTween.Sequence();
-        seq.AppendInterval(2);
-        seq.AppendCallback(() => HideThisPanel(() =>
+        // Update properties ngay lập tức
+        if (GameManager.Instance.sessionState == GameManager.SessionState.InProgress)
         {
-            UIManager.Instance.ResultPanelGameobject.SetActive(true);
-            Time.timeScale = 0;
-            UIManager.Instance.statePanel = UIManager.StatePanel.Result; // Cập nhật trạng thái panel
-        }));
-        seq.SetUpdate(true);
+            GameManager.Instance.UpdateProperties();
+            GameManager.Instance.sessionState = GameManager.SessionState.Finished; // Đánh dấu phiên chơi đã kết thúc
+            SaveManager.Instance.Save(); // Lưu dữ liệu ngay khi người chơi chết
+        }
 
+
+        // Delay 2s rồi hiện ResultPanel
+        DOVirtual.DelayedCall(2f, () =>
+        {
+            HideThisPanel(() =>
+            {
+                UIManager.Instance.ResultPanelGameobject.SetActive(true);
+                Time.timeScale = 1; // Consistent với PausePanel
+                UIManager.Instance.statePanel = UIManager.StatePanel.Result;
+            });
+        });
     }
 }

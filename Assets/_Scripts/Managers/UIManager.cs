@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using DG.Tweening;
+using System.Linq;
 
 public class UIManager : Singleton<UIManager>
 {
@@ -15,6 +16,7 @@ public class UIManager : Singleton<UIManager>
     public GameObject ShopPanelGameobject;
     public GameObject InGamePanelGameobject;
     public GameObject ResultPanelGameobject;
+    public GameObject FailedPurchasePanelGameobject; // Canvas hiển thị thông báo cần thêm coin
 
 
     //------------------------------------------
@@ -23,8 +25,10 @@ public class UIManager : Singleton<UIManager>
     public GameObject shopButtonGameobject; // Nút vào shop
     public GameObject settingButtonGameobject; // Nút vào setting
     public GameObject quitButtonGameobject; // Nút thoát game
+    public GameObject LogoGameobject; // Logo game
 
     //Dotween Animation main
+    public DOTweenAnimation LogoGameDQ { get; private set; }
     public DOTweenAnimation playButtonDQ { get; private set; }
     public DOTweenAnimation shopButtonDQ { get; private set; }
     public DOTweenAnimation settingButtonDQ { get; private set; }
@@ -47,8 +51,16 @@ public class UIManager : Singleton<UIManager>
 
 
     //------------------------------------------
-    //UI Result 
+    [Header("-----UI Result-----")]
+    public TextMeshProUGUI resultCoinIngameText; // Hiển thị số lượng coin trong game
+    public TextMeshProUGUI resultDistanceTraveledText; // Hiển thị khoảng cách đã di chuyển
     public DOTweenAnimation resultPanelDQ { get; set; }
+
+    //-------------------------------------------
+    [Header("-----UI InGame-----")]
+    public TextMeshProUGUI distanceTraveledText; // Hiển thị khoảng cách đã di chuyển
+    public TextMeshProUGUI distanceBestText; // Hiển thị khoảng cách tốt nhất
+    public TextMeshProUGUI coinIngameText; // Hiển thị số lượng coin trong game
 
     //------------------------------------------
     [Header("-----UI Shop-----")]
@@ -59,6 +71,7 @@ public class UIManager : Singleton<UIManager>
     public Image itemImage;
     public TextMeshProUGUI itemNameText;
     public TextMeshProUGUI itemPriceText;
+    public TextMeshProUGUI coinTotalText; // Hiển thị tổng số coin
 
     [Header("Button")]
     public GameObject itemUnlockButtonGameobject;
@@ -86,7 +99,6 @@ public class UIManager : Singleton<UIManager>
     public AnimationCurve loadingCurve = AnimationCurve.EaseInOut(0, 0, 1, 1); // Đường cong loading mượt mà
 
     //------------------------------------------
-
     //Enum
     public enum StatePanel
     {
@@ -104,7 +116,7 @@ public class UIManager : Singleton<UIManager>
 
     void Update()
     {
-        Debug.Log("Current State Panel: " + statePanel);
+        UpdateDisplayUI();
     }
 
     private void GetComponentDotween()
@@ -114,6 +126,9 @@ public class UIManager : Singleton<UIManager>
         shopButtonDQ = shopButtonGameobject.GetComponent<DOTweenAnimation>();
         settingButtonDQ = settingButtonGameobject.GetComponent<DOTweenAnimation>();
         quitButtonDQ = quitButtonGameobject.GetComponent<DOTweenAnimation>();
+
+        DOTweenAnimation[] anim = LogoGameobject.GetComponents<DOTweenAnimation>();
+        LogoGameDQ = anim.FirstOrDefault(a => a.id == "MoveLogo");
 
         //Setting
         settingPanelDQ = SettingPanelGameobject.GetComponent<DOTweenAnimation>();
@@ -130,5 +145,23 @@ public class UIManager : Singleton<UIManager>
         resultPanelDQ = ResultPanelGameobject.GetComponent<DOTweenAnimation>();
     }
 
+    private void UpdateDisplayUI()
+    {
+        //Shop
+        coinTotalText.text = GameManager.Instance.coinTotal.ToString();
 
+        //InGame
+        distanceTraveledText.text = GameManager.Instance.distanceTraveled.ToString() + "M";
+
+        if (GameManager.Instance.distanceBest > GameManager.Instance.distanceTraveled)
+            distanceBestText.text = "Best: " + GameManager.Instance.distanceBest.ToString() + "M";
+        else
+            distanceBestText.text = "Best: " + GameManager.Instance.distanceTraveled.ToString() + "M";
+
+        coinIngameText.text = GameManager.Instance.coinIngame.ToString();
+
+        //Result
+        resultCoinIngameText.text = GameManager.Instance.coinIngame.ToString();
+        resultDistanceTraveledText.text = GameManager.Instance.distanceTraveled.ToString() + "M";
+    }
 }

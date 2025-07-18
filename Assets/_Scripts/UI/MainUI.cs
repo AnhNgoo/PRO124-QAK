@@ -16,6 +16,8 @@ public class MainUI : MonoBehaviour
         seq.AppendCallback(() => UIManager.Instance.shopButtonDQ.DOPlayBackwards());
         seq.AppendInterval(0.2f);
         seq.AppendCallback(() => UIManager.Instance.playButtonDQ.DOPlayBackwards());
+        seq.AppendInterval(0.2f);
+        seq.AppendCallback(() => UIManager.Instance.LogoGameDQ.DOPlayBackwards());
         seq.AppendInterval(0.4f);
         seq.AppendCallback(() => UIManager.Instance.MainPanelGameobject.SetActive(false));
         if (onHidden != null)
@@ -29,12 +31,6 @@ public class MainUI : MonoBehaviour
         {
             AudioManager.Instance.PlayMusic("MainTheme");
         }
-        
-        // Phát SFX khi mở game
-        if (AudioManager.Instance != null)
-        {
-            AudioManager.Instance.PlaySFX("OpenGame");
-        }
     }
 
     public void PlayGame()
@@ -44,14 +40,14 @@ public class MainUI : MonoBehaviour
         {
             AudioManager.Instance.PlaySFX("ButtonPress");
         }
-        
+
         // Dừng nhạc chủ đề và phát nhạc trong game
         if (AudioManager.Instance != null)
         {
             AudioManager.Instance.StopMusic();
             AudioManager.Instance.PlayMusic("InGame");
         }
-        
+
         HideThisPanel(() => StartGameCutScene.Instance.StartCutScene());
     }
 
@@ -62,7 +58,7 @@ public class MainUI : MonoBehaviour
         {
             AudioManager.Instance.PlaySFX("ButtonPress");
         }
-        
+
         HideThisPanel(() => UIManager.Instance.ShopPanelGameobject.SetActive(true));
     }
 
@@ -73,7 +69,7 @@ public class MainUI : MonoBehaviour
         {
             AudioManager.Instance.PlaySFX("ButtonPress");
         }
-        
+
         HideThisPanel(() => UIManager.Instance.SettingPanelGameobject.SetActive(true));
     }
 
@@ -92,20 +88,21 @@ public class MainUI : MonoBehaviour
             DoQuit();
         }
     }
-    
+
     private IEnumerator QuitAfterSound()
     {
         // Đợi 2 giây (hoặc thời gian âm thanh CloseGame)
         yield return new WaitForSeconds(2f);
-        
+
         DoQuit();
     }
-    
+
     private void DoQuit()
     {
+        SaveManager.Instance.Save(); // Lưu dữ liệu trước khi thoát
         Application.Quit();
-        #if UNITY_EDITOR
+#if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
-        #endif
+#endif
     }
 }

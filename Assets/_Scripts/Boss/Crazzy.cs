@@ -23,6 +23,12 @@ public class Crazzy : MonoBehaviour
         StartMove();
     }
 
+    void OnDestroy()
+    {
+        DOTween.Kill(this);
+        DOTween.Kill(gameObject);
+        DOTween.Kill(transform);
+    }
     void Start()
     {
         AddBulletListToPool();
@@ -106,6 +112,7 @@ public class Crazzy : MonoBehaviour
         {
             InRunEventsManager.Instance.obstacleBlock.SetActive(false);
             gameObject.SetActive(false);
+            InRunEventsManager.Instance.isBigEventActive = false;
         });
     }
 
