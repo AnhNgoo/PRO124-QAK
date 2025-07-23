@@ -165,3 +165,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f12d2a4b7eb7ecb4fa7446458739d4e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  targetTag: ObstacleBlocker
