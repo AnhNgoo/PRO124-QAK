@@ -13,6 +13,8 @@ public class PowerUpManager : Singleton<PowerUpManager>
     private float nextPowerUpSpawnDistance = 0f;
 
     public Shield shield { get; private set; }
+    public CounterShield counterShield { get; private set; }
+    
     private void Start()
     {
         InitComponent();
@@ -30,6 +32,9 @@ public class PowerUpManager : Singleton<PowerUpManager>
         shield = transform.Cast<Transform>()
                    .Select(t => t.GetComponent<Shield>())
                    .FirstOrDefault(s => s != null);
+        counterShield = transform.Cast<Transform>()
+                   .Select(t => t.GetComponent<CounterShield>())
+                   .FirstOrDefault(cs => cs != null);
     }
 
     private void ActivePowerUp(string namePowerUp)
