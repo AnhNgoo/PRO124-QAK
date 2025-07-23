@@ -20,7 +20,6 @@ public class PowerUpDisplay : Singleton<PowerUpDisplay>
 
     private void AddListPowerUpSlotsAndSetParent()
     {
-        Debug.Log("AddListPowerUpSlotsAndSetParent");
         ObjectPooler.Instance.Add("PowerUpSlot", powerUpSlots);
         ObjectPooler.Instance.SetParents(powerUpDisplay, "PowerUpSlot");
     }

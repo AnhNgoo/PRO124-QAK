@@ -11,12 +11,14 @@ public class StartGameCutScene : Singleton<StartGameCutScene>
     private GameObject playerGameObject;
     private Transform playerPosition;
     private Rigidbody2D playerRigidbody;
+    private BackToFlightPoint backToFlightPoint;
 
     private void GetComponent()
     {
         playerGameObject = GameObject.FindGameObjectWithTag("Player");
         playerPosition = playerGameObject.transform;
         playerRigidbody = playerGameObject.GetComponent<Rigidbody2D>();
+        backToFlightPoint = GameObject.Find("StartingPoint").GetComponent<BackToFlightPoint>();
     }
 
     public void StartCutScene()
@@ -32,6 +34,7 @@ public class StartGameCutScene : Singleton<StartGameCutScene>
             CutSceneBlocker.Instance.isCutSceneActive = true;
             MapSpawner.Instance.SetScrollSpeed(0);
             playerRigidbody.gravityScale = 0f;
+            backToFlightPoint.enabled = false; // Tắt BackToFlightPoint để không ảnh hưởng đến cutscene
 
         });
         //Di chuyển map sang trái
@@ -74,6 +77,7 @@ public class StartGameCutScene : Singleton<StartGameCutScene>
             DistanceTracker.Instance.ResetDistance();
             GameManager.Instance.coinIngame = 0; // Reset coin count at the start of the game
             DistanceTracker.Instance.isStopped = false; // Dừng distance tracking
+            backToFlightPoint.enabled = true; // Bật lại BackToFlightPoint sau khi cutscene kết thúc
         });
     }
 }

@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 2341822676449221200}
   - component: {fileID: 6057404105411208385}
   - component: {fileID: 5716385269567148108}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Laser_Short_Base
   m_TagString: Obstacle
   m_Icon: {fileID: 0}

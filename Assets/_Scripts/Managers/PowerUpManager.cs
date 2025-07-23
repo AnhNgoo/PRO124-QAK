@@ -52,8 +52,6 @@ public class PowerUpManager : Singleton<PowerUpManager>
             powerUpObj.GetComponent<IPowerUp>().Init(duration);
             PowerUpDisplay.Instance.ShowPowerUp(namePowerUp);
         }
-        Debug.Log($"PowerUp activated: {namePowerUp}");
-        Debug.Log(powerUpObj.name);
     }
     private void SpawnPowerUpByDistance()
     {

@@ -11,7 +11,10 @@ public class GameManager : Singleton<GameManager>
     public enum SessionState { InProgress, Finished }
     public SessionState sessionState = SessionState.InProgress;
 
-
+    void Start()
+    {
+        Application.targetFrameRate = 60; // Đặt tốc độ khung hình mục tiêu
+    }
     public void UpdateProperties()
     {
         coinTotal += coinIngame; // Cộng dồn coin đã thu thập vào tổng số coin
