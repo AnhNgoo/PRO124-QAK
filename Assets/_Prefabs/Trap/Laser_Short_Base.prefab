@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 2341822676449221200}
   - component: {fileID: 6057404105411208385}
   - component: {fileID: 5716385269567148108}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Laser_Short_Base
   m_TagString: Obstacle
   m_Icon: {fileID: 0}
@@ -165,3 +165,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f12d2a4b7eb7ecb4fa7446458739d4e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  targetTag: ObstacleBlocker
