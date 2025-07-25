@@ -18,5 +18,7 @@ public class Coin : MonoBehaviour
             GameManager.Instance.coinIngame++;
             gameObject.SetActive(false);
         }
+
+        if (other.CompareTag("Wrecker")) gameObject.SetActive(false);
     }
 }
