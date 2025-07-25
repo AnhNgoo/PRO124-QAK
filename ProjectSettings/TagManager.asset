@@ -10,6 +10,7 @@ TagManager:
   - ObstacleBlocker
   - Coin
   - PowerUp
+  - Wrecker
   layers:
   - Default
   - TransparentFX

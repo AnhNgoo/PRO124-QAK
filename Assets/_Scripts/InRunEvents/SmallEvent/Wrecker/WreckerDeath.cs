@@ -2,41 +2,37 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerDeath : MonoBehaviour
+public class WreckerDeath : MonoBehaviour
 {
+    public GameObject wrecker;
     private GameObject smoke;
     private ParticleSystem smokeParticle;
 
-    public delegate void PlayerDeathDelegate();
-    public event PlayerDeathDelegate deathEvent;
+
     private void Start()
     {
         GetComponent();
-        smoke.SetActive(false);
-        deathEvent += Death;
     }
     private void GetComponent()
     {
-        smoke = GameObject.Find("PlayerSmoke");
+        smoke = GameObject.Find("WreckerSmoke");
         smokeParticle = smoke.GetComponent<ParticleSystem>();
     }
 
     public void Death()
     {
-        DistanceTracker.Instance.isStopped = true; // Dừng theo dõi khoảng cách khi người chơi chết
-        smoke.SetActive(true);
         smoke.transform.position = transform.position;
-
         smokeParticle.Play();
-        gameObject.SetActive(false);
+        wrecker.SetActive(false);
+        Debug.Log("Wrecker has died");
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (PowerUpManager.Instance.shield.isActive) return;
         if (collision.CompareTag("Obstacle"))
         {
-            deathEvent?.Invoke();
+            Debug.Log("Wrecker collided with an obstacle");
+            Death();
         }
     }
 }
