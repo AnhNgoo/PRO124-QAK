@@ -4,7 +4,7 @@ using UnityEngine;
 public class SaveManager : Singleton<SaveManager>
 {
     string path = "DataGame.es3";
-    private DataGame data = new DataGame();
+    public DataGame data = new DataGame();
 
 
     private void OnApplicationQuit()
@@ -25,6 +25,7 @@ public class SaveManager : Singleton<SaveManager>
         SaveSkins();
         SaveJetpacks();
         SaveSettings();
+        SaveQuests();
 
         // Lưu tên skin và jetpack đang được chọn
         data.currentSkinName = SkinManager.Instance.skins.currentItemName;
@@ -35,6 +36,7 @@ public class SaveManager : Singleton<SaveManager>
         ES3.Save("DataSkins", data.skins, path);
         ES3.Save("DataJetpacks", data.jetpacks, path);
         ES3.Save("DataSettings", data.settings, path);
+        ES3.Save("DataQuests", data.questData, path);
         ES3.Save("CurrentSkinName", data.currentSkinName, path);
         ES3.Save("CurrentJetpackEffectName", data.currentJetpackEffectName, path);
     }
@@ -43,6 +45,21 @@ public class SaveManager : Singleton<SaveManager>
     {
         data.playerData.coinTotal = GameManager.Instance.coinTotal;
         data.playerData.distanceBest = GameManager.Instance.distanceBest;
+    }
+
+    private void SaveQuests()
+    {
+        if (QuestManager.Instance != null)
+        {
+            data.questData.activeQuests.Clear();
+            
+            foreach (var quest in QuestManager.Instance.activeQuests)
+            {
+                data.questData.activeQuests.Add(new DataQuestItem(quest));
+            }
+            
+            data.questData.lastDailyQuestDate = QuestManager.Instance.GetLastDailyQuestDate();
+        }
     }
 
     private void SaveSkins()
@@ -85,6 +102,7 @@ public class SaveManager : Singleton<SaveManager>
         LoadSkins();
         LoadJetpacks();
         LoadSettings();
+        LoadQuests();
     }
 
     private void LoadPlayerData()
@@ -144,4 +162,20 @@ public class SaveManager : Singleton<SaveManager>
             UIManager.Instance.sfxSlider.value = settings.sfxVolume;
         }
     }
+
+    private void LoadQuests()
+    {
+        if (ES3.KeyExists("DataQuests", path))
+        {
+            DataQuest questData = ES3.Load<DataQuest>("DataQuests", path);
+            data.questData = questData;
+            
+            // Load quest data vào QuestManager
+            if (QuestManager.Instance != null)
+            {
+                QuestManager.Instance.LoadFromSaveData(data.questData);
+            }
+        }
+    }
+
 }

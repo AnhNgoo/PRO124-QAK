@@ -14,6 +14,8 @@ public class DataGame
     public string currentJetpackEffectName;
 
     public DataSettings settings = new DataSettings();
+
+    public DataQuest questData = new DataQuest();
 }
 
 [System.Serializable]
@@ -56,3 +58,29 @@ public class DataSettings
     public float sfxVolume;
 }
 
+[System.Serializable]
+public class DataQuest
+{
+    public List<DataQuestItem> activeQuests = new List<DataQuestItem>();
+    public string lastDailyQuestDate; // Lưu ngày cuối cùng tạo daily quest
+    public int completedQuestsToday; // Số quest đã hoàn thành hôm nay
+}
+
+[System.Serializable]
+public class DataQuestItem
+{
+    public string questId;
+    public int currentProgress;
+    public bool isCompleted;
+    public bool isClaimed;
+    public QuestDifficulty difficulty;
+    
+    public DataQuestItem(Quest quest)
+    {
+        questId = quest.questId;
+        currentProgress = quest.currentProgress;
+        isCompleted = quest.isCompleted;
+        isClaimed = quest.isClaimed;
+        difficulty = quest.difficulty;
+    }
+}

@@ -3030,7 +3030,7 @@ MonoBehaviour:
     clip: {fileID: 8300000, guid: 8fdce31e423195941a9b87689d84b28f, type: 3}
     isMusic: 0
     volume: 1
-  - name: FootSteep
+  - name: FootStep
     clip: {fileID: 8300000, guid: dbd1de62e22f1e14c9568df1d846c7f0, type: 3}
     isMusic: 0
     volume: 1
@@ -10922,6 +10922,7 @@ MonoBehaviour:
   scrollSpeedLimit: 35
   durationStop: 2
   increaseAmount: 0.1
+  StartSpawnMapPoint: {x: -5, y: 0, z: 0}
   mapPrefab:
   - {fileID: 7577683562155843710, guid: 682f06978b7867a4bab6848df1baa390, type: 3}
   - {fileID: 3795002786579997137, guid: e92ea8752c95a4646b777c5390202bc4, type: 3}
