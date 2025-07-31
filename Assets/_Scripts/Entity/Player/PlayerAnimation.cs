@@ -27,8 +27,8 @@ public class PlayerAnimation : MonoBehaviour
 
     private void GetComponent()
     {
-            anim = GameObject.Find("Skin").GetComponent<Animator>();
-            playerController = GetComponent<PlayerController>();
+        anim = gameObject.transform.Find("Skin").GetComponent<Animator>();
+        playerController = GetComponent<PlayerController>();
     }
 
     private void UpdateState()

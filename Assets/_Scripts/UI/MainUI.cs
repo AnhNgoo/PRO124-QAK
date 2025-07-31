@@ -48,7 +48,7 @@ public class MainUI : MonoBehaviour
             AudioManager.Instance.PlayMusic("InGame");
         }
 
-        HideThisPanel(() => StartGameCutScene.Instance.StartCutScene());
+        HideThisPanel(() => StartGameCutScene.Instance.StartCutScenePVP());
     }
 
     public void OpenShopPanel()

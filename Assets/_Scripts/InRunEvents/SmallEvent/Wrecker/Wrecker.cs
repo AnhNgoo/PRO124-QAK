@@ -6,6 +6,7 @@ using DG.Tweening;
 public class Wrecker : MonoBehaviour
 {
     public GameObject wrecker;
+    public GameObject bulletWreckerGameobject;
     public float raycastFindSafeFlightDistance = 100f;
     public float raycastWreckerDistance = 50f; // Khoảng cách raycast để kiểm tra obstacle
 
@@ -15,13 +16,16 @@ public class Wrecker : MonoBehaviour
     [Header("Attack Settings")]
     public int attackCount = 3;
     public float attackInterval = 2f; // Thời gian giữa các lần attack
-    public float attackSpeed = 0.5f; // Tốc độ di chuyển khi attack
+    public float attackDuration = 0.5f; // Tốc độ di chuyển khi attack
     public float returnSpeed = 1f; // Tốc độ quay về
 
-    private Transform player;
+    private GameObject player;
     private bool isMoving = false;
-    private bool isObstacleNearPlayer = false; // Biến kiểm tra có obstacle gần player hay không
+    private bool isObstacleNearWrecker = false; // Biến kiểm tra có obstacle gần player hay không
+    private bool isStopped = false;
     private Vector3 safePosition; // Lưu vị trí an toàn hiện tại
+    private BulletWrecker bulletWrecker;
+    private PlayerController playerController;
 
     void OnEnable()
     {
@@ -31,19 +35,30 @@ public class Wrecker : MonoBehaviour
 
     private void Update()
     {
-        CheckObstacleNearPlayer();
+        CheckObstacleNearWrecker();
+        StopOnMajorEvent();
     }
 
     void GetComponent()
     {
-        player = GameObject.FindGameObjectWithTag("Player").transform;
+        player = GameObject.FindGameObjectWithTag("Player");
+        bulletWrecker = bulletWreckerGameobject.GetComponent<BulletWrecker>();
+        if (player == null) return;
+        playerController = player.GetComponent<PlayerController>();
+        playerController.playerDeath.deathEvent += Stop;
     }
 
+    private void StopOnMajorEvent()
+    {
+        if (InRunEventsManager.Instance.isBigEventActive) Stop();
+    }
     private void StartMove()
     {
+        if (isStopped) return;
         Sequence sequence = DOTween.Sequence();
         sequence.AppendCallback(() =>
         {
+            bulletWreckerGameobject.SetActive(false);
             wrecker.transform.position = transform.position;
             Transform safeFlightPoint = FindSafeFlight();
             if (safeFlightPoint != null)
@@ -56,41 +71,50 @@ public class Wrecker : MonoBehaviour
 
         sequence.AppendCallback(() =>
         {
-            StartCoroutine(MainBehavior());
+            StartCoroutine(MainBehaviorWithCallback());
         });
-
-        sequence.AppendInterval(20f);
-
-        sequence.AppendCallback(() =>
-        {
-            isMoving = false;
-        });
-
-        sequence.Append(wrecker.transform.DOMove(transform.position, 1)
-                                          .SetEase(Ease.InBack));
-
-        sequence.AppendInterval(1f);
-
-        sequence.AppendCallback(() =>
-        {
-            gameObject.SetActive(false); // Tắt Wrecker sau khi hoàn thành hành vi
-        });
-
 
     }
 
-    private IEnumerator MainBehavior()
+    private IEnumerator MainBehaviorWithCallback()
     {
-        for (int i = 0; i < attackCount; i++)
+        int attackDone = 0;
+        while (attackDone < attackCount)
         {
-            // Trạng thái 1: Di chuyển né obstacle trong 2 giây
             yield return StartCoroutine(AvoidancePhase());
-
-            // Trạng thái 2: Attack player rồi quay về
-            yield return StartCoroutine(AttackPhase());
+            if (!isObstacleNearWrecker)
+            {
+                yield return StartCoroutine(AttackPhase());
+                attackDone++;
+            }
+            else
+            {
+                Debug.Log("Bỏ qua attack vì có obstacle, không tăng attackDone");
+            }
         }
-        isMoving = false; // Kết thúc hành vi chính
+
+        isMoving = false;
+        StartExitSequence();
     }
+
+
+    private void StartExitSequence()
+    {
+        Debug.Log("Bắt đầu thoát");
+        Sequence exitSequence = DOTween.Sequence();
+
+        exitSequence.Append(wrecker.transform.DOMove(transform.position, 1f)
+                                             .SetEase(Ease.InBack));
+
+        exitSequence.AppendInterval(1f);
+
+        exitSequence.AppendCallback(() =>
+        {
+            gameObject.SetActive(false);
+        });
+    }
+
+
 
     private IEnumerator AvoidancePhase()
     {
@@ -107,57 +131,31 @@ public class Wrecker : MonoBehaviour
 
     private IEnumerator AttackPhase()
     {
-        if (isObstacleNearPlayer)
-        {
-            Debug.Log("Bỏ qua");
-            yield break; // Không attack nếu có obstacle gần player
-        }
+        if (player == null || wrecker == null) yield break;
+        if (isObstacleNearWrecker) yield break; // Không attack nếu có obstacle gần player
+        bulletWreckerGameobject.SetActive(false);
+        Vector3 shootDirection = (player.transform.position - wrecker.transform.position).normalized;
+        bulletWreckerGameobject.SetActive(true); // Bật bullet khi bắt đầu attack
+        bulletWrecker.transform.position = wrecker.transform.position;
+        bulletWrecker.Init(shootDirection);
 
-        isMoving = false;
-
-        // Lưu vị trí hiện tại trước khi attack
-        Vector3 currentSafePos = wrecker.transform.position;
-
-        // Di chuyển đến player
-        wrecker.transform.DOMove(player.position, attackSpeed)
-            .SetEase(Ease.InOutBack);
-
-        yield return new WaitForSeconds(attackSpeed);
-
-        // Tìm vị trí an toàn mới
-        Transform newSafePoint = FindSafeFlight();
-        if (newSafePoint != null)
-        {
-            safePosition = newSafePoint.position;
-        }
-        else
-        {
-            // Nếu không tìm thấy điểm an toàn mới, quay về vị trí cũ
-            safePosition = currentSafePos;
-        }
-
-        // Quay về vị trí an toàn
-        wrecker.transform.DOMove(safePosition, returnSpeed)
-            .SetEase(Ease.OutBack);
-
-        yield return new WaitForSeconds(returnSpeed);
-
+        yield return new WaitForSeconds(attackDuration);
     }
 
-    private void CheckObstacleNearPlayer()
+    private void CheckObstacleNearWrecker()
     {
 
-        RaycastHit2D hit = Physics2D.Raycast(player.position, Vector2.right, 50, obstacleLayerMask);
+        RaycastHit2D hit = Physics2D.Raycast(wrecker.transform.position, Vector2.right, 20, obstacleLayerMask);
 
         if (hit.collider != null && hit.collider.gameObject.CompareTag("Obstacle"))
         {
             Debug.Log("Khi true");
-            isObstacleNearPlayer = true;
+            isObstacleNearWrecker = true;
         }
         else
         {
             Debug.Log("Khi false");
-            isObstacleNearPlayer = false;
+            isObstacleNearWrecker = false;
         }
 
     }
@@ -192,11 +190,34 @@ public class Wrecker : MonoBehaviour
         return null;
     }
 
+    void Stop()
+    {
+        StopAllCoroutines();
+        Sequence sequence = DOTween.Sequence();
+
+        sequence.AppendCallback(() =>
+        {
+            isStopped = true;
+            isMoving = false;
+            wrecker.transform.DOKill();
+        });
+
+        sequence.Append(wrecker.transform.DOMove(transform.position, 2f)
+                                             .SetEase(Ease.InBack));
+
+        sequence.AppendInterval(1f);
+        sequence.AppendCallback(() =>
+        {
+            bulletWreckerGameobject.SetActive(false);
+            gameObject.SetActive(false);
+        });
+    }
+
     private void OnDrawGizmos()
     {
         if (flightPoints == null) return;
 
-        // Vẽ flight points với raycast check obstacle
+        // 1. Vẽ flight points với raycast detection
         foreach (var flightPoint in flightPoints)
         {
             if (flightPoint == null) continue;
@@ -205,67 +226,132 @@ public class Wrecker : MonoBehaviour
 
             if (hit.collider == null || !hit.collider.gameObject.CompareTag("Obstacle"))
             {
-                Gizmos.color = Color.green; // An toàn
-                                            // Vẽ full distance nếu không có obstacle
+                // Flight point an toàn
+                Gizmos.color = Color.green;
+                Gizmos.DrawWireSphere(flightPoint.position, 0.3f);
                 Gizmos.DrawRay(flightPoint.position, Vector2.right * raycastFindSafeFlightDistance);
             }
             else
             {
-                Gizmos.color = Color.red; // Có vật cản
-                                          // Vẽ đến điểm hit
+                // Flight point có obstacle
+                Gizmos.color = Color.red;
+                Gizmos.DrawWireSphere(flightPoint.position, 0.3f);
                 Gizmos.DrawLine(flightPoint.position, hit.point);
-                // Vẽ điểm hit
-                Gizmos.DrawWireSphere(hit.point, 0.2f);
+
+                // Vẽ obstacle hit point
+                Gizmos.color = Color.gray;
+                Gizmos.DrawWireCube(hit.point, Vector3.one * 0.4f);
             }
         }
 
-        // Vẽ trạng thái wrecker
+        // 2. Vẽ wrecker và raycast detection
         if (wrecker != null)
         {
-            Gizmos.color = isMoving ? Color.red : Color.blue;
-            Gizmos.DrawWireSphere(wrecker.transform.position, 0.5f);
+            // Vẽ wrecker với màu theo trạng thái
+            Gizmos.color = isMoving ? Color.green : Color.blue;
+            Gizmos.DrawWireSphere(wrecker.transform.position, 0.6f);
 
-            // Vẽ raycast từ wrecker với LayerMask và distance đúng
+            // Vẽ raycast từ wrecker để detect obstacle
             RaycastHit2D wreckerHit = Physics2D.Raycast(wrecker.transform.position, Vector2.right, raycastWreckerDistance, obstacleLayerMask);
 
-            if (wreckerHit.collider != null)
+            if (wreckerHit.collider != null && wreckerHit.collider.gameObject.CompareTag("Obstacle"))
             {
-                Gizmos.color = Color.blue;
+                // Wrecker detect obstacle
+                Gizmos.color = Color.red;
                 Gizmos.DrawLine(wrecker.transform.position, wreckerHit.point);
-                Gizmos.DrawWireSphere(wreckerHit.point, 0.2f);
+
+                // Vẽ obstacle detection point
+                Gizmos.color = Color.yellow;
+                Gizmos.DrawWireCube(wreckerHit.point, Vector3.one * 0.3f);
             }
             else
             {
-                Gizmos.color = Color.yellow;
+                // Wrecker không detect obstacle
+                Gizmos.color = Color.cyan;
                 Gizmos.DrawRay(wrecker.transform.position, Vector2.right * raycastWreckerDistance);
+            }
+
+            // Vẽ safe position hiện tại
+            if (safePosition != Vector3.zero)
+            {
+                Gizmos.color = Color.magenta;
+                Gizmos.DrawWireSphere(safePosition, 0.4f);
+
+                // Vẽ line từ wrecker đến safe position
+                Gizmos.color = Color.white;
+                Gizmos.DrawLine(wrecker.transform.position, safePosition);
             }
         }
 
-        // Vẽ raycast check obstacle near player
+        // 3. Vẽ wrecker detection raycast (CheckObstacleNearWrecker)
+        if (wrecker != null)
+        {
+            RaycastHit2D wreckerDetectionHit = Physics2D.Raycast(wrecker.transform.position, Vector2.right, 50, obstacleLayerMask);
+
+            if (wreckerDetectionHit.collider != null && wreckerDetectionHit.collider.gameObject.CompareTag("Obstacle"))
+            {
+                // Wrecker detect obstacle trong range 50
+                Gizmos.color = Color.red;
+                Gizmos.DrawLine(wrecker.transform.position, wreckerDetectionHit.point);
+
+                // Vẽ detection hit point
+                Gizmos.color = Color.red;
+                Gizmos.DrawSphere(wreckerDetectionHit.point, 0.2f);
+            }
+            else
+            {
+                // Không detect obstacle
+                Gizmos.color = new Color(0, 1, 1, 0.5f); // Cyan trong suốt
+                Gizmos.DrawRay(wrecker.transform.position, Vector2.right * 50);
+            }
+        }
+
+        // 4. Vẽ player và raycast (cho tham khảo)
         if (player != null)
         {
-            RaycastHit2D playerHit = Physics2D.Raycast(player.position, Vector2.right, 50, obstacleLayerMask);
+            // Vẽ player với màu theo trạng thái isObstacleNearPlayer
+            Gizmos.color = isObstacleNearWrecker ? Color.red : Color.green;
+            Gizmos.DrawWireSphere(player.transform.position, 0.5f);
+
+            // Vẽ raycast từ player để tham khảo
+            RaycastHit2D playerHit = Physics2D.Raycast(player.transform.position, Vector2.right, 50, obstacleLayerMask);
 
             if (playerHit.collider != null && playerHit.collider.gameObject.CompareTag("Obstacle"))
             {
-                // Có obstacle gần player
-                Gizmos.color = Color.magenta;
-                Gizmos.DrawLine(player.position, playerHit.point);
-
-                // Vẽ điểm hit
-                Gizmos.color = Color.white;
-                Gizmos.DrawWireSphere(playerHit.point, 0.3f);
+                Gizmos.color = new Color(1, 0, 1, 0.7f); // Magenta trong suốt
+                Gizmos.DrawLine(player.transform.position, playerHit.point);
             }
             else
             {
-                // Không có obstacle gần player
-                Gizmos.color = Color.cyan;
-                Gizmos.DrawRay(player.position, Vector2.right * 50);
+                Gizmos.color = new Color(0, 1, 1, 0.3f); // Cyan rất trong suốt
+                Gizmos.DrawRay(player.transform.position, Vector2.right * 50);
             }
+        }
 
-            // Vẽ điểm player
-            Gizmos.color = isObstacleNearPlayer ? Color.red : Color.green;
-            Gizmos.DrawWireSphere(player.position, 0.4f);
+        // 5. Vẽ bullet wrecker nếu đang active
+        if (bulletWreckerGameobject != null && bulletWreckerGameobject.activeInHierarchy)
+        {
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawWireSphere(bulletWreckerGameobject.transform.position, 0.3f);
+
+            // Vẽ hướng bắn bullet
+            if (player != null && wrecker != null)
+            {
+                Vector3 shootDirection = (player.transform.position - wrecker.transform.position).normalized;
+                Gizmos.color = Color.red;
+                Gizmos.DrawRay(bulletWreckerGameobject.transform.position, shootDirection * 10f);
+            }
+        }
+
+        // 6. Vẽ thông tin debug text (tùy chọn)
+        if (wrecker != null)
+        {
+            // Có thể thêm Handles.Label để hiển thị text debug
+#if UNITY_EDITOR
+            UnityEditor.Handles.color = Color.white;
+            UnityEditor.Handles.Label(wrecker.transform.position + Vector3.up * 1f,
+                $"Moving: {isMoving}\nObstacle Near: {isObstacleNearWrecker}");
+#endif
         }
     }
 }
