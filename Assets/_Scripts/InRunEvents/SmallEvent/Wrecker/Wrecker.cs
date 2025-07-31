@@ -131,8 +131,8 @@ public class Wrecker : MonoBehaviour
 
     private IEnumerator AttackPhase()
     {
-        if (isObstacleNearWrecker)
-            yield break; // Không attack nếu có obstacle gần player
+        if (player == null || wrecker == null) yield break;
+        if (isObstacleNearWrecker) yield break; // Không attack nếu có obstacle gần player
         bulletWreckerGameobject.SetActive(false);
         Vector3 shootDirection = (player.transform.position - wrecker.transform.position).normalized;
         bulletWreckerGameobject.SetActive(true); // Bật bullet khi bắt đầu attack

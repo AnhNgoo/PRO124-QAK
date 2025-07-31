@@ -15,11 +15,9 @@ public class MapSpawner : Singleton<MapSpawner>
     //Private
     private PlayerController playerController;
 
-    private GameObject previousMap;
     public GameObject currentMap { get; set; }
-    private GameObject nextMap;
+    public GameObject nextMap { get; set; }
     private int currentMapIndex = 0;
-    private int nextMapIndex = -1;
 
     private float countdown = 0f; // Biến đếm thời gian để tăng tốc độ
 
@@ -63,11 +61,9 @@ public class MapSpawner : Singleton<MapSpawner>
     //Cập nhật Map
     private void UpdateMap()
     {
-        if (currentMap.transform.position.x <= StartSpawnMapPoint.x)
+        if (nextMap.transform.position.x <= StartSpawnMapPoint.x)
         {
-            ObjectPooler.Instance.DesTroy(previousMap);
-
-            previousMap = currentMap;
+            ObjectPooler.Instance.DesTroy(currentMap);
 
             currentMap = nextMap;
 
@@ -110,35 +106,21 @@ public class MapSpawner : Singleton<MapSpawner>
         {
             index = Random.Range(1, mapPrefab.Count);
         }
-        while (index == currentMapIndex || index == nextMapIndex);
+        while (index == currentMapIndex);
 
         return index;
     }
 
     //Gán index cho Map hiện tại và Map tiếp theo
-    private void AssignIndexForCurrentMapAndNextMap(int newIndex)
-    {
-        // Gán lại index phù hợp
-        if (currentMap == null)
-            currentMapIndex = newIndex;
-        else if (nextMap == null)
-            nextMapIndex = newIndex;
-        else
-            currentMapIndex = nextMapIndex;
-        nextMapIndex = newIndex;
-    }
+    private void AssignIndexForCurrentMapAndNextMap(int newIndex) => currentMapIndex = newIndex;
     //Di chuyển Map
-    void MoveMap()
-    {
-        transform.Translate(Vector3.left * scrollSpeed * Time.deltaTime);
-    }
+    void MoveMap() => transform.Translate(Vector3.left * scrollSpeed * Time.deltaTime);
 
     //Dừng khi player chết
-    public void StopScrollingInTime()
-    {
-        StartCoroutine(SmoothStopScroll(durationStop));
-    }
+    public void StopScrollingInTime() => StartCoroutine(SmoothStopScroll(durationStop));
 
+
+    // Dừng cuộn mượt mà
     private IEnumerator SmoothStopScroll(float durationStop)
     {
         float startSpeed = scrollSpeed;
@@ -155,6 +137,7 @@ public class MapSpawner : Singleton<MapSpawner>
         scrollSpeed = 0f;
     }
 
+    // Tăng tốc độ cuộn
     private void IncreaseScrollSpeed()
     {
         if (scrollSpeed == 0 || scrollSpeed == scrollSpeedLimit) return;

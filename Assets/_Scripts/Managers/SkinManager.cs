@@ -19,7 +19,7 @@ public class SkinManager : Singleton<SkinManager>
 
     private void GetComponent()
     {
-        spriteLibrary = GameObject.Find("Player").GetComponent<SpriteLibrary>();
+        spriteLibrary = GameObject.Find("Player 1").GetComponent<SpriteLibrary>();
         changeSkin = GetComponent<ChangeSkin>();
         currentSkinName = skins.currentItemName;
     }

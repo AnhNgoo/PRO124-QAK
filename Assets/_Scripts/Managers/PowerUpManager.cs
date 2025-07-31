@@ -14,7 +14,7 @@ public class PowerUpManager : Singleton<PowerUpManager>
 
     public Shield shield { get; private set; }
     public CounterShield counterShield { get; private set; }
-    
+
     private void Start()
     {
         InitComponent();
@@ -58,7 +58,7 @@ public class PowerUpManager : Singleton<PowerUpManager>
         if (DistanceTracker.Instance.distanceTraveled >= nextPowerUpSpawnDistance)
         {
             nextPowerUpSpawnDistance += powerUpSpawnDistance;
-            MapSpawner.Instance.currentMap.GetComponent<ResetMap>().SpawnPowerUp();
+            MapSpawner.Instance.nextMap.GetComponent<ResetMap>().SpawnPowerUp();
         }
     }
 }

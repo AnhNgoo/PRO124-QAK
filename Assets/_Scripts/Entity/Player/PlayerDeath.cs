@@ -2,8 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class PlayerDeath : MonoBehaviour
 {
+    public string playerSmokeName;
     private GameObject smoke;
     private ParticleSystem smokeParticle;
 
@@ -17,7 +19,7 @@ public class PlayerDeath : MonoBehaviour
     }
     private void GetComponent()
     {
-        smoke = GameObject.Find("PlayerSmoke");
+        smoke = GameObject.Find(playerSmokeName);
         smokeParticle = smoke.GetComponent<ParticleSystem>();
     }
 
