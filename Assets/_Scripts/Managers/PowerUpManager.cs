@@ -9,17 +9,14 @@ public class PowerUpManager : Singleton<PowerUpManager>
     public float powerUpSpawnDistance = 100f; // Khoảng cách để spawn PowerUp
     public List<GameObject> powerUpList = new();
 
-    private PlayerPowerUp playerPowerUp;
     private float nextPowerUpSpawnDistance = 0f;
 
     public Shield shield { get; private set; }
-    public CounterShield counterShield { get; private set; }
 
     private void Start()
     {
         InitComponent();
         nextPowerUpSpawnDistance = powerUpSpawnDistance;
-        playerPowerUp.powerUpEvent += ActivePowerUp;
     }
     private void Update()
     {
@@ -28,17 +25,14 @@ public class PowerUpManager : Singleton<PowerUpManager>
 
     private void InitComponent()
     {
-        playerPowerUp = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerPowerUp>();
         shield = transform.Cast<Transform>()
                    .Select(t => t.GetComponent<Shield>())
                    .FirstOrDefault(s => s != null);
-        counterShield = transform.Cast<Transform>()
-                   .Select(t => t.GetComponent<CounterShield>())
-                   .FirstOrDefault(cs => cs != null);
     }
 
-    private void ActivePowerUp(string namePowerUp)
+    public void ActivePowerUp(string namePowerUp, GameObject player = null)
     {
+        Debug.Log($"Activating PowerUp: {player.name}");
         var powerUpObj = powerUpList
                          .FirstOrDefault(powerUp => powerUp.name == namePowerUp);
 
@@ -49,7 +43,7 @@ public class PowerUpManager : Singleton<PowerUpManager>
         {
             powerUpObj.gameObject.SetActive(false);
             powerUpObj.gameObject.SetActive(true);
-            powerUpObj.GetComponent<IPowerUp>().Init(duration);
+            powerUpObj.GetComponent<IPowerUp>().Init(duration, player);
             PowerUpDisplay.Instance.ShowPowerUp(namePowerUp);
         }
     }

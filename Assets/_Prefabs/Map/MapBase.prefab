@@ -1522,6 +1522,7 @@ GameObject:
   - component: {fileID: 3960387482281757740}
   - component: {fileID: 7991445784507745927}
   - component: {fileID: 4425899246606903239}
+  - component: {fileID: 1525674142009142919}
   m_Layer: 0
   m_Name: Coins
   m_TagString: Untagged
@@ -1631,6 +1632,20 @@ TilemapRenderer:
   m_Mode: 0
   m_DetectChunkCullingBounds: 0
   m_MaskInteraction: 0
+--- !u!114 &1525674142009142919
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8115503209966258394}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b75e3eda44c99e34b8b24ff19ed49dad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  normalModeAction: 0
+  pvpModeAction: 1
 --- !u!1 &8204582890095932073
 GameObject:
   m_ObjectHideFlags: 0

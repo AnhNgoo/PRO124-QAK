@@ -4,9 +4,6 @@ using UnityEngine;
 
 public class PlayerPowerUp : MonoBehaviour
 {
-    public delegate void PowerUp(string namePowerUp);
-    public event PowerUp powerUpEvent;
-
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("PowerUp"))
@@ -16,8 +13,8 @@ public class PlayerPowerUp : MonoBehaviour
             {
                 AudioManager.Instance.PlaySFX("PickUp");
             }
-            
-            powerUpEvent?.Invoke(collision.gameObject.name);
+
+            PowerUpManager.Instance.ActivePowerUp(collision.gameObject.name, this.gameObject);
             Debug.Log(collision.gameObject.name);
         }
     }

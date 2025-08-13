@@ -60,6 +60,7 @@ public class StartGameCutScene : Singleton<StartGameCutScene>
             MapSpawner.Instance.SetScrollSpeed(0);
             playerRigidbody[0].gravityScale = 0f;
             backToFlightPoint.enabled = false; // Tắt BackToFlightPoint để không ảnh hưởng đến cutscene
+            GameManager.Instance.gameMode = GameManager.GameMode.Normal; // Set game mode to Normal
 
         });
         //Di chuyển map sang trái
@@ -98,11 +99,12 @@ public class StartGameCutScene : Singleton<StartGameCutScene>
             playerRigidbody[0].gravityScale = 7f;
             CutSceneBlocker.Instance.isCutSceneActive = false;
             UIManager.Instance.InGamePanelGameobject.SetActive(true);
-
+            GameEvent.Instance.TriggerEvent("GameMode");
             DistanceTracker.Instance.ResetDistance();
             GameManager.Instance.coinIngame = 0; // Reset coin count at the start of the game
             DistanceTracker.Instance.isStopped = false; // Dừng distance tracking
             backToFlightPoint.enabled = true; // Bật lại BackToFlightPoint sau khi cutscene kết thúc
+
         });
     }
 
@@ -131,6 +133,7 @@ public class StartGameCutScene : Singleton<StartGameCutScene>
             }
 
             backToFlightPoint.enabled = false; // Tắt BackToFlightPoint để không ảnh hưởng đến cutscene
+            GameManager.Instance.gameMode = GameManager.GameMode.PVP; // Set game mode to PVP
 
         });
         //Di chuyển map sang trái
@@ -175,12 +178,19 @@ public class StartGameCutScene : Singleton<StartGameCutScene>
             }
             CutSceneBlocker.Instance.isCutSceneActive = false;
             UIManager.Instance.InGamePanelGameobject.SetActive(true);
+            StartCoroutine(TriggerGameModeEventNextFrame());
 
             DistanceTracker.Instance.ResetDistance();
             GameManager.Instance.coinIngame = 0; // Reset coin count at the start of the game
             DistanceTracker.Instance.isStopped = false; // Dừng distance tracking
             backToFlightPoint.enabled = true; // Bật lại BackToFlightPoint sau khi cutscene kết thúc
+
         });
     }
 
+    private IEnumerator TriggerGameModeEventNextFrame()
+    {
+        yield return null; // đợi 1 frame
+        GameEvent.Instance.TriggerEvent("GameMode");
+    }
 }

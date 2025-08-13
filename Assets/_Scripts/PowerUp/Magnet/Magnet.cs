@@ -24,7 +24,7 @@ public class Magnet : MonoBehaviour, IPowerUp
         Disable();
     }
 
-    public void Init(float duration)
+    public void Init(float duration, GameObject player = null)
     {
         lifeTime = duration; // Reset thời gian sống khi kích hoạt lại
 

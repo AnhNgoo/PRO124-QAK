@@ -35,15 +35,12 @@ public class MapSpawner : Singleton<MapSpawner>
         nextMap = SpawnRandomMap(GetNextMapPosition());
     }
 
-    public void SetScrollSpeed(float speed)
-    {
-        scrollSpeed = speed;
-    }
+    public void SetScrollSpeed(float speed) => scrollSpeed = speed;
     void Start()
     {
         AddListPrefabToPoolAndSetParents();
         InitMap();
-        GetComponent();
+        RegisterEvents();
     }
 
     void Update()
@@ -53,10 +50,9 @@ public class MapSpawner : Singleton<MapSpawner>
         IncreaseScrollSpeed();
     }
 
-    private void GetComponent()
+    private void RegisterEvents()
     {
-        playerController = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
-        playerController.playerDeath.deathEvent += StopScrollingInTime;
+        GameEvent.Instance.RegisterEvent("PlayerDeath", StopScrollingInTime);
     }
     //Cập nhật Map
     private void UpdateMap()
