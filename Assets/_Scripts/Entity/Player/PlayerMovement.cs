@@ -5,6 +5,7 @@ public class PlayerMovement : MonoBehaviour
     public float flyForce = 15f;
     public float maxVerticalSpeed = 8f;
     public float gravityMultiplier = 2f;
+    public KeyCode flyKey = KeyCode.Space;
 
     private Rigidbody2D rb;
     private ParticleSystem jetpackParticle;
@@ -29,7 +30,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (CutSceneBlocker.Instance.isCutSceneActive) return;
 
-        if (Input.GetKey(KeyCode.Space) || Input.GetMouseButton(0))
+        if (Input.GetKey(flyKey))
         {
             if (rb.velocity.y < maxVerticalSpeed)
             {

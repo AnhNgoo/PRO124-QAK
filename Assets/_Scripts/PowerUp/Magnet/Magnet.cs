@@ -5,10 +5,18 @@ using UnityEngine;
 
 public class Magnet : MonoBehaviour, IPowerUp
 {
-    public float lifeTime = 30;
+    public float lifeTime = 20;
     private GameObject player;
     private GameObject powerUpManager;
+    private Collider2D _collider;
     private HashSet<GameObject> tweenedCoins = new();
+
+    private void Start()
+    {
+        _collider = GetComponent<Collider2D>();
+        _collider.enabled = false;
+        gameObject.SetActive(false);
+    }
 
     void Update()
     {
@@ -16,7 +24,7 @@ public class Magnet : MonoBehaviour, IPowerUp
         Disable();
     }
 
-    public void Init(float duration)
+    public void Init(float duration, GameObject player = null)
     {
         lifeTime = duration; // Reset thời gian sống khi kích hoạt lại
 
@@ -24,6 +32,7 @@ public class Magnet : MonoBehaviour, IPowerUp
         powerUpManager = GameObject.Find("PowerUpManager");
         transform.SetParent(player.transform);
         transform.localPosition = Vector3.zero;
+        _collider.enabled = true;
     }
     private void OnTriggerEnter2D(Collider2D collision) // Thay đổi từ Stay2D thành Enter2D
     {
@@ -64,6 +73,7 @@ public class Magnet : MonoBehaviour, IPowerUp
         // Dừng tất cả coroutines
         StopAllCoroutines();
 
+        _collider.enabled = false;
         gameObject.SetActive(false);
         gameObject.transform.SetParent(powerUpManager.transform);
         PowerUpDisplay.Instance.HidePowerUp(gameObject.name);

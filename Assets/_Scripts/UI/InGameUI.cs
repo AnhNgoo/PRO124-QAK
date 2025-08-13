@@ -6,13 +6,11 @@ using DG.Tweening;
 public class InGameUI : MainUI
 {
 
-    private PlayerController playerController;
-
     private void Start()
     {
-        playerController = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
-        playerController.playerDeath.deathEvent += OpenResultPanel;
+        GameEvent.Instance.RegisterEvent("PlayerDeath", OpenResultPanelByMode);
     }
+
 
     protected override void HideThisPanel(System.Action onHidden = null)
     {
@@ -28,6 +26,18 @@ public class InGameUI : MainUI
         UIManager.Instance.statePanel = UIManager.StatePanel.Pause; // Cập nhật trạng thái panel
     }
 
+
+    private void OpenResultPanelByMode()
+    {
+        if (GameManager.Instance.playerTotal == 1)
+        {
+            OpenResultPanel();
+        }
+        else
+        {
+            OpenResultPanelForPVP();
+        }
+    }
     //Mở Result Panel khi người chơi chết
     private void OpenResultPanel()
     {
@@ -48,6 +58,19 @@ public class InGameUI : MainUI
                 UIManager.Instance.ResultPanelGameobject.SetActive(true);
                 Time.timeScale = 1; // Consistent với PausePanel
                 UIManager.Instance.statePanel = UIManager.StatePanel.Result;
+            });
+        });
+    }
+
+    private void OpenResultPanelForPVP()
+    {
+        // Delay 2s rồi hiện PVPResultPanel
+        DOVirtual.DelayedCall(2f, () =>
+        {
+            HideThisPanel(() =>
+            {
+                UIManager.Instance.PVPResultPanelGameobject.SetActive(true);
+                Time.timeScale = 1; // Consistent với PausePanel
             });
         });
     }

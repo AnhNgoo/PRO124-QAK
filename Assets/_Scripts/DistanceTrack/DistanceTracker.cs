@@ -6,6 +6,10 @@ public class DistanceTracker : Singleton<DistanceTracker>
 {
     public float distanceTraveled { get; set; }
     public bool isStopped { get; set; } = false;
+    private void Start()
+    {
+        GameEvent.Instance.RegisterEvent("PlayerDeath", StopTracking);
+    }
     private void Update()
     {
         if (CutSceneBlocker.Instance.isCutSceneActive || isStopped) return;
@@ -17,4 +21,11 @@ public class DistanceTracker : Singleton<DistanceTracker>
     {
         distanceTraveled = 0f;
     }
+
+    public void StopTracking()
+    {
+        isStopped = true;
+    }
+
+
 }

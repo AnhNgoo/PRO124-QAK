@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class Crazzy : MonoBehaviour
 {
@@ -10,8 +11,7 @@ public class Crazzy : MonoBehaviour
     public Transform bullets;
     public Transform firePoint;
 
-    private PlayerController playerController;
-    private Transform player;
+    private List<Transform> player = new();
     private List<GameObject> bulletList = new();
     private bool isAttacking = false;
     private bool isFollowingY = false;
@@ -44,9 +44,8 @@ public class Crazzy : MonoBehaviour
     }
     private void GetComponent()
     {
-        player = GameObject.FindGameObjectWithTag("Player").transform;
-        playerController = player.GetComponent<PlayerController>();
-        playerController.playerDeath.deathEvent += Stop;
+        player = GameObject.FindGameObjectsWithTag("Player").Select(x => x.transform).ToList();
+        GameEvent.Instance.RegisterEvent("PlayerDeath", Stop);
     }
 
     private void StartMove()
@@ -57,7 +56,7 @@ public class Crazzy : MonoBehaviour
         sequence.AppendCallback(() =>
         {
             crazzy.position = transform.position;
-            
+
             // Phát âm thanh cảnh báo boss
             if (AudioManager.Instance != null)
             {
@@ -79,7 +78,7 @@ public class Crazzy : MonoBehaviour
                 AudioManager.Instance.StopMusic();
                 AudioManager.Instance.PlayMusic("BossMusic");
             }
-            
+
             StartCoroutine(Attack());
         });
         sequence.JoinCallback(() =>
@@ -123,8 +122,9 @@ public class Crazzy : MonoBehaviour
         {
             isAttacking = true;
             isFollowingY = true;
+            int playerIndex = Random.Range(0, player.Count);
             crazzy
-                 .DOMoveY(player.position.y, 2f)
+                 .DOMoveY(player[playerIndex].position.y, 2f)
                  .SetEase(Ease.OutBack);
             yield return new WaitForSeconds(0.5f);
             // Lấy một viên đạn từ pool
@@ -143,8 +143,9 @@ public class Crazzy : MonoBehaviour
         while (isFollowingY)
         {
             if (isAttacking) yield return null;
+            int playerIndex = Random.Range(0, player.Count);
             crazzy
-                 .DOMoveY(player.position.y, 2f)
+                 .DOMoveY(player[playerIndex].position.y, 2f)
                  .SetEase(Ease.OutBack);
             yield return new WaitForSeconds(1f);
         }
@@ -169,7 +170,7 @@ public class Crazzy : MonoBehaviour
         sequence.Append(crazzy
                            .DOMove(transform.position, 1f)
                            .SetEase(Ease.InBack));
-        
+
         // Phát lại nhạc trong game ngay lập tức khi boss bắt đầu rời đi
         sequence.AppendCallback(() =>
         {
@@ -179,7 +180,7 @@ public class Crazzy : MonoBehaviour
                 AudioManager.Instance.PlayMusic("InGame");
             }
         });
-        
+
         sequence.AppendInterval(1f);
         sequence.AppendCallback(() =>
         {

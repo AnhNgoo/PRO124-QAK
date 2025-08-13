@@ -66,7 +66,7 @@ public class InRunEventsManager : Singleton<InRunEventsManager>
 
             int randomIndex = Random.Range(0, bigEvents.childCount);
             Transform bigEvent = bigEvents.GetChild(randomIndex);
-            bigEvent.gameObject.SetActive(true);
+            bigEvent?.gameObject.SetActive(true);
         });
 
     }

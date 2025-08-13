@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using System.Linq;
 
 public class Wrecker : MonoBehaviour
 {
@@ -19,13 +20,12 @@ public class Wrecker : MonoBehaviour
     public float attackDuration = 0.5f; // Tốc độ di chuyển khi attack
     public float returnSpeed = 1f; // Tốc độ quay về
 
-    private GameObject player;
+    private List<GameObject> player = new();
     private bool isMoving = false;
     private bool isObstacleNearWrecker = false; // Biến kiểm tra có obstacle gần player hay không
     private bool isStopped = false;
     private Vector3 safePosition; // Lưu vị trí an toàn hiện tại
     private BulletWrecker bulletWrecker;
-    private PlayerController playerController;
 
     void OnEnable()
     {
@@ -41,11 +41,10 @@ public class Wrecker : MonoBehaviour
 
     void GetComponent()
     {
-        player = GameObject.FindGameObjectWithTag("Player");
+        player = GameObject.FindGameObjectsWithTag("Player").Select(x => x).ToList();
         bulletWrecker = bulletWreckerGameobject.GetComponent<BulletWrecker>();
-        if (player == null) return;
-        playerController = player.GetComponent<PlayerController>();
-        playerController.playerDeath.deathEvent += Stop;
+
+        GameEvent.Instance.RegisterEvent("PlayerDeath", Stop);
     }
 
     private void StopOnMajorEvent()
@@ -131,10 +130,13 @@ public class Wrecker : MonoBehaviour
 
     private IEnumerator AttackPhase()
     {
-        if (isObstacleNearWrecker)
-            yield break; // Không attack nếu có obstacle gần player
+        if (player == null || wrecker == null) yield break;
+        if (isObstacleNearWrecker) yield break; // Không attack nếu có obstacle gần player
         bulletWreckerGameobject.SetActive(false);
-        Vector3 shootDirection = (player.transform.position - wrecker.transform.position).normalized;
+
+        int playerIndex = Random.Range(0, player.Count);
+        Vector3 shootDirection = (player[0].transform.position - wrecker.transform.position).normalized;
+
         bulletWreckerGameobject.SetActive(true); // Bật bullet khi bắt đầu attack
         bulletWrecker.transform.position = wrecker.transform.position;
         bulletWrecker.Init(shootDirection);
@@ -311,47 +313,59 @@ public class Wrecker : MonoBehaviour
         {
             // Vẽ player với màu theo trạng thái isObstacleNearPlayer
             Gizmos.color = isObstacleNearWrecker ? Color.red : Color.green;
-            Gizmos.DrawWireSphere(player.transform.position, 0.5f);
+
+            foreach (var player in player)
+            {
+                if (player == null) continue;
+
+                Gizmos.DrawWireSphere(player.transform.position, 0.5f);
+            }
 
             // Vẽ raycast từ player để tham khảo
-            RaycastHit2D playerHit = Physics2D.Raycast(player.transform.position, Vector2.right, 50, obstacleLayerMask);
-
-            if (playerHit.collider != null && playerHit.collider.gameObject.CompareTag("Obstacle"))
+            foreach (var player in player)
             {
-                Gizmos.color = new Color(1, 0, 1, 0.7f); // Magenta trong suốt
-                Gizmos.DrawLine(player.transform.position, playerHit.point);
+                if (player == null) continue;
+
+                RaycastHit2D playerHit = Physics2D.Raycast(player.transform.position, Vector2.right, 50, obstacleLayerMask);
+
+                if (playerHit.collider != null && playerHit.collider.gameObject.CompareTag("Obstacle"))
+                {
+                    Gizmos.color = new Color(1, 0, 1, 0.7f); // Magenta trong suốt
+                    Gizmos.DrawLine(player.transform.position, playerHit.point);
+                }
+                else
+                {
+                    Gizmos.color = new Color(0, 1, 1, 0.3f); // Cyan rất trong suốt
+                    Gizmos.DrawRay(player.transform.position, Vector2.right * 50);
+                }
             }
-            else
+
+            // 5. Vẽ bullet wrecker nếu đang active
+            if (bulletWreckerGameobject != null && bulletWreckerGameobject.activeInHierarchy)
             {
-                Gizmos.color = new Color(0, 1, 1, 0.3f); // Cyan rất trong suốt
-                Gizmos.DrawRay(player.transform.position, Vector2.right * 50);
+                Gizmos.color = Color.yellow;
+                Gizmos.DrawWireSphere(bulletWreckerGameobject.transform.position, 0.3f);
+
+                // Vẽ hướng bắn bullet
+                if (player != null && wrecker != null)
+                {
+                    int playerIndex = Random.Range(0, player.Count);
+                    Vector3 shootDirection = (player[playerIndex].transform.position - wrecker.transform.position).normalized;
+                    Gizmos.color = Color.red;
+                    Gizmos.DrawRay(bulletWreckerGameobject.transform.position, shootDirection * 10f);
+                }
             }
-        }
 
-        // 5. Vẽ bullet wrecker nếu đang active
-        if (bulletWreckerGameobject != null && bulletWreckerGameobject.activeInHierarchy)
-        {
-            Gizmos.color = Color.yellow;
-            Gizmos.DrawWireSphere(bulletWreckerGameobject.transform.position, 0.3f);
-
-            // Vẽ hướng bắn bullet
-            if (player != null && wrecker != null)
+            // 6. Vẽ thông tin debug text (tùy chọn)
+            if (wrecker != null)
             {
-                Vector3 shootDirection = (player.transform.position - wrecker.transform.position).normalized;
-                Gizmos.color = Color.red;
-                Gizmos.DrawRay(bulletWreckerGameobject.transform.position, shootDirection * 10f);
-            }
-        }
-
-        // 6. Vẽ thông tin debug text (tùy chọn)
-        if (wrecker != null)
-        {
-            // Có thể thêm Handles.Label để hiển thị text debug
+                // Có thể thêm Handles.Label để hiển thị text debug
 #if UNITY_EDITOR
-            UnityEditor.Handles.color = Color.white;
-            UnityEditor.Handles.Label(wrecker.transform.position + Vector3.up * 1f,
-                $"Moving: {isMoving}\nObstacle Near: {isObstacleNearWrecker}");
+                UnityEditor.Handles.color = Color.white;
+                UnityEditor.Handles.Label(wrecker.transform.position + Vector3.up * 1f,
+                    $"Moving: {isMoving}\nObstacle Near: {isObstacleNearWrecker}");
 #endif
+            }
         }
     }
 }
