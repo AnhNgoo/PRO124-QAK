@@ -1,0 +1,93 @@
+[gd_scene load_steps=15 format=3 uid="uid://dtigid26sgbs5"]
+
+[ext_resource type="Script" path="res://entities/missile/missile.gd" id="1_e4log"]
+[ext_resource type="AudioStream" uid="uid://mgy43m0sw82f" path="res://assets/original_sfx/missile_launch.wav" id="2_40qnw"]
+[ext_resource type="Script" path="res://common/components/destruct/destructor_2d.gd" id="2_ehd8s"]
+[ext_resource type="Texture2D" uid="uid://c24hev6c7qydd" path="res://gdd/art-bible/assets/obstacles_sprites.png" id="3_37mc4"]
+[ext_resource type="AudioStream" uid="uid://btspxtoyyxgip" path="res://assets/original_sfx/missile_warning.wav" id="3_ig0qo"]
+[ext_resource type="Script" path="res://utilities/spawner/spawnable/spawnable.gd" id="4_bn04m"]
+[ext_resource type="Texture2D" uid="uid://biptq4dk3ujyd" path="res://entities/missile/missile_warning.png" id="5_axx0x"]
+[ext_resource type="AudioStream" uid="uid://bohqgaph88tyi" path="res://assets/original_sfx/rocket_explode_1.wav" id="5_wkpev"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_v2wn0"]
+size = Vector2(88, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_yvap1"]
+atlas = ExtResource("5_axx0x")
+region = Rect2(128, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pfwfr"]
+atlas = ExtResource("5_axx0x")
+region = Rect2(192, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bom1g"]
+atlas = ExtResource("5_axx0x")
+region = Rect2(0, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_nr248"]
+atlas = ExtResource("5_axx0x")
+region = Rect2(64, 0, 64, 64)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_0ufmw"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_yvap1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pfwfr")
+}],
+"loop": true,
+"name": &"warning_high",
+"speed": 12.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bom1g")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_nr248")
+}],
+"loop": true,
+"name": &"warning_low",
+"speed": 6.0
+}]
+
+[node name="Missile" type="Node2D"]
+script = ExtResource("1_e4log")
+audio_launch = ExtResource("2_40qnw")
+audio_warning = ExtResource("3_ig0qo")
+
+[node name="Destructor2D" type="Area2D" parent="."]
+script = ExtResource("2_ehd8s")
+audio_streams = Array[AudioStream]([ExtResource("5_wkpev")])
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Destructor2D"]
+position = Vector2(44, 0)
+shape = SubResource("RectangleShape2D_v2wn0")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(93, 0)
+scale = Vector2(3, 3)
+texture = ExtResource("3_37mc4")
+region_enabled = true
+region_rect = Rect2(1, 211, 62, 24)
+
+[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="."]
+position = Vector2(44, 4.76837e-07)
+scale = Vector2(4.4, 2.4)
+
+[node name="Spawnable" type="Node2D" parent="."]
+script = ExtResource("4_bn04m")
+
+[node name="warning_animation_sprite" type="AnimatedSprite2D" parent="."]
+position = Vector2(-192, 0)
+scale = Vector2(3, 3)
+sprite_frames = SubResource("SpriteFrames_0ufmw")
+animation = &"warning_high"
+autoplay = "warning_low"
+
+[node name="warning_timer" type="Timer" parent="."]
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
+bus = &"missile"

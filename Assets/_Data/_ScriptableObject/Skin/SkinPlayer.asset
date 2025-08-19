@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b976edf282797474ebf17d5ab8bbd281, type: 3}
+  m_Name: SkinPlayer
+  m_EditorClassIdentifier: 
+  itemList:
+  - spriteLibraryAsset: {fileID: 7108339969198208228, guid: 8cc8fa656f3a6ae44bf7c064622a7582, type: 3}
+    sprite: {fileID: -332486807, guid: 0d99738280610e24ab9607246d613bb8, type: 3}
+    skinName: JetBoy
+    price: 2000
+    status: 0
+  - spriteLibraryAsset: {fileID: 7108339969198208228, guid: 9ad36fbb1e665244da41a6eb6f7b0c1c, type: 3}
+    sprite: {fileID: -53986321, guid: 09451ba6f8adc624d9609b0d1e7a160f, type: 3}
+    skinName: GoldBoy
+    price: 2000
+    status: 1
+  - spriteLibraryAsset: {fileID: 7108339969198208228, guid: 1b9ec865c35aea049b2ca003cae104de, type: 3}
+    sprite: {fileID: -1675684641, guid: e1be965e5c639e140ad9404f6f0236f3, type: 3}
+    skinName: IronBoy
+    price: 2000
+    status: 1
+  - spriteLibraryAsset: {fileID: 7108339969198208228, guid: 8f6b80c2bf7036f4484c4b9bf5593024, type: 3}
+    sprite: {fileID: -1697775293, guid: 0243a899b7dbafe418b0846185b8b0e4, type: 3}
+    skinName: Robot
+    price: 2000
+    status: 1
+  currentItemName: JetBoy
