@@ -51,7 +51,18 @@ public class SceneLoader : Singleton<SceneLoader>
 
         // Lưu callback vào static variable
         if (isReplay)
-            staticOnLoadingComplete = ReplayGame;
+        {
+            switch (GameManager.Instance.gameMode)
+            {
+                case GameManager.GameMode.Normal:
+                    staticOnLoadingComplete = ReplayGame;
+                    break;
+                case GameManager.GameMode.PVP:
+                    staticOnLoadingComplete = PVPReplayGame;
+                    break;
+            }
+        }
+
 
         // Đặt flag để khi scene load lại sẽ tự động chạy loading
         shouldLoadOnStart = true;
@@ -84,6 +95,20 @@ public class SceneLoader : Singleton<SceneLoader>
         Sequence seq = DOTween.Sequence();
         seq.AppendInterval(0.5f);
         seq.AppendCallback(() => StartGameCutScene.Instance.StartCutScene());
+        Time.timeScale = 1; // Tiếp tục thời gian khi chơi lại
+    }
+
+    private void PVPReplayGame()
+    {
+        // Dừng nhạc chủ đề và phát nhạc trong game
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.StopMusic();
+            AudioManager.Instance.PlayMusic("InGame");
+        }
+        Sequence seq = DOTween.Sequence();
+        seq.AppendInterval(0.5f);
+        seq.AppendCallback(() => StartGameCutScene.Instance.StartCutScenePVP());
         Time.timeScale = 1; // Tiếp tục thời gian khi chơi lại
     }
 

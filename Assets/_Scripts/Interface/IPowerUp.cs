@@ -4,5 +4,5 @@ using UnityEngine;
 
 public interface IPowerUp
 {
-    void Init(float duration);
+    void Init(float duration, GameObject player = null);
 }

@@ -16,12 +16,14 @@ public class UIManager : Singleton<UIManager>
     public GameObject ShopPanelGameobject;
     public GameObject InGamePanelGameobject;
     public GameObject ResultPanelGameobject;
+    public GameObject PVPResultPanelGameobject; // GameObject cho PVP Result Panel
     public GameObject FailedPurchasePanelGameobject; // Canvas hiển thị thông báo cần thêm coin
 
 
     //------------------------------------------
     [Header("-----UI Main-----")]
     public GameObject playButtonGameobject; // Nút chơi game
+    public GameObject PVPButtonGameobject; // Nút vào PVP
     public GameObject shopButtonGameobject; // Nút vào shop
     public GameObject settingButtonGameobject; // Nút vào setting
     public GameObject quitButtonGameobject; // Nút thoát game
@@ -30,6 +32,7 @@ public class UIManager : Singleton<UIManager>
     //Dotween Animation main
     public DOTweenAnimation LogoGameDQ { get; private set; }
     public DOTweenAnimation playButtonDQ { get; private set; }
+    public DOTweenAnimation PVPButtonDQ { get; private set; }
     public DOTweenAnimation shopButtonDQ { get; private set; }
     public DOTweenAnimation settingButtonDQ { get; private set; }
     public DOTweenAnimation quitButtonDQ { get; private set; }
@@ -55,6 +58,11 @@ public class UIManager : Singleton<UIManager>
     public TextMeshProUGUI resultCoinIngameText; // Hiển thị số lượng coin trong game
     public TextMeshProUGUI resultDistanceTraveledText; // Hiển thị khoảng cách đã di chuyển
     public DOTweenAnimation resultPanelDQ { get; set; }
+
+    [Header("-----UI PVP Result-----")]
+    public TextMeshProUGUI winnerText; // Hiển thị người chiến thắng
+    public TextMeshProUGUI pvpResultDistanceTraveledText; // Hiển thị khoảng cách đã di chuyển trong PVP
+    public DOTweenAnimation pvpResultPanelDQ { get; set; }
 
     //-------------------------------------------
     [Header("-----UI InGame-----")]
@@ -110,7 +118,7 @@ public class UIManager : Singleton<UIManager>
 
     private void Start()
     {
-
+        GameEvent.Instance.RegisterEvent("PlayerDeath", UpdateDisplayUIGameOver);
         GetComponentDotween();
     }
 
@@ -123,6 +131,7 @@ public class UIManager : Singleton<UIManager>
     {
         //Main
         playButtonDQ = playButtonGameobject.GetComponent<DOTweenAnimation>();
+        PVPButtonDQ = PVPButtonGameobject.GetComponent<DOTweenAnimation>();
         shopButtonDQ = shopButtonGameobject.GetComponent<DOTweenAnimation>();
         settingButtonDQ = settingButtonGameobject.GetComponent<DOTweenAnimation>();
         quitButtonDQ = quitButtonGameobject.GetComponent<DOTweenAnimation>();
@@ -143,6 +152,9 @@ public class UIManager : Singleton<UIManager>
 
         //Result
         resultPanelDQ = ResultPanelGameobject.GetComponent<DOTweenAnimation>();
+
+        //PVP Result
+        pvpResultPanelDQ = PVPResultPanelGameobject.GetComponent<DOTweenAnimation>();
     }
 
     private void UpdateDisplayUI()
@@ -159,9 +171,16 @@ public class UIManager : Singleton<UIManager>
             distanceBestText.text = "Best: " + GameManager.Instance.distanceTraveled.ToString() + "M";
 
         coinIngameText.text = GameManager.Instance.coinIngame.ToString();
+    }
 
+    private void UpdateDisplayUIGameOver()
+    {
         //Result
         resultCoinIngameText.text = GameManager.Instance.coinIngame.ToString();
         resultDistanceTraveledText.text = GameManager.Instance.distanceTraveled.ToString() + "M";
+
+        //PVP Result
+        pvpResultDistanceTraveledText.text = GameManager.Instance.distanceTraveled.ToString() + "M";
+        winnerText.text = GameManager.Instance.lastDeadPlayerName;
     }
 }

@@ -17,6 +17,8 @@ public class MainUI : MonoBehaviour
         seq.AppendInterval(0.2f);
         seq.AppendCallback(() => UIManager.Instance.playButtonDQ.DOPlayBackwards());
         seq.AppendInterval(0.2f);
+        seq.AppendCallback(() => UIManager.Instance.PVPButtonDQ.DOPlayBackwards());
+        seq.AppendInterval(0.2f);
         seq.AppendCallback(() => UIManager.Instance.LogoGameDQ.DOPlayBackwards());
         seq.AppendInterval(0.4f);
         seq.AppendCallback(() => UIManager.Instance.MainPanelGameobject.SetActive(false));
@@ -49,6 +51,24 @@ public class MainUI : MonoBehaviour
         }
 
         HideThisPanel(() => StartGameCutScene.Instance.StartCutScene());
+    }
+
+    public void PlayPVPGame()
+    {
+        // Phát SFX button press
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlaySFX("ButtonPress");
+        }
+
+        // Dừng nhạc chủ đề và phát nhạc trong game
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.StopMusic();
+            AudioManager.Instance.PlayMusic("InGame");
+        }
+
+        HideThisPanel(() => StartGameCutScene.Instance.StartCutScenePVP());
     }
 
     public void OpenShopPanel()
