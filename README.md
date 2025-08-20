@@ -207,6 +207,6 @@ Stop():
 - Gọi coroutine `LoadingCoroutine()` để hiển thị thanh loading
 - Khi loading hoàn tất → gọi `staticOnLoadingComplete.Invoke()` và reset về `null`
 
-  ##Dotween
+  ## Dotween
   - DOTween trong Unity là một thư viện tweening giúp bạn tạo hiệu ứng chuyển động (animation) cho các giá trị (position, scale, rotation, màu sắc, số, v.v.) một cách mượt mà, ngắn gọn và dễ viết code hơn so với tự làm
   - Sequence trong dotween giúp chạy các chuyển động hoặc các phương thức 1 cách tuần tự hoặc song song với nhau
