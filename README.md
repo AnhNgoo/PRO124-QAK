@@ -47,6 +47,14 @@
 
 ---
 
+### 4. Tóm tắt cơ chế hoạt động
+
+-Các vật phẩm muốn hiển thị trong shop (như skin, jetpack...) cần được tạo thành các class riêng kế thừa từ interface IShopItem, nhằm đảm bảo có các thuộc tính chung như: Name, Price, Icon, IsUnlocked
+-Tiếp theo, ta sử dụng một class Generic (GenericShopManager<T>) để xử lý chung tất cả các loại item. Kiểu T bắt buộc phải kế thừa IShopItem để đảm bảo có thể truy cập các thuộc tính chung.
+-Nhờ vậy, shop chỉ cần xử lý qua interface IShopItem với các thuộc tính: Name, Price, Icon, IsUnlocked, không cần quan tâm item cụ thể là gì → giúp tái sử dụng, mở rộng linh hoạt hơn.
+
+---
+
 ## 💾 Save/Load Dữ Liệu Trong Game
 
 ### 1. 🧱 DataGame
