@@ -4,12 +4,27 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using DG.Tweening;
 
+/// <summary>
+/// Khi cần load scene, ta dùng singleton gọi ReloadSceneWithLoading và truyền tham số true/false <br/>
+/// False: nó sẽ bỏ qua việc gán callback Replay theo chế độ <br/>
+/// True: nó sẽ gán callback Replay theo chế độ <br/>
+/// Callback sẽ gán vào biến staticOnLoadingComplete <br/>
+/// Sau khi xong sẽ chạy LoadScene để load lại scene <br/>
+/// Start sẽ chạy để gọi hàm StartLoading <br/>
+/// Hàm StartLoading sẽ kiểm tra biến staticOnLoadingComplete có gán callback Replay ở trên không <br/>
+/// Nếu null thì sẽ gán callback mặc định, nếu khác null thì bỏ qua việc kiểm tra <br/>
+/// Gọi coroutine để hiển thị loading
+/// Khi hoàn tất sẽ gọi staticOnLoadingComplete và reset biến về null
+/// </summary>
 public class SceneLoader : Singleton<SceneLoader>
 {
     private bool isLoading = false;
     private static bool shouldLoadOnStart = true; // Biến để kiểm tra có cần load khi start không
     private static System.Action staticOnLoadingComplete; // Dùng static để survive qua scene reload
 
+    /// <summary>
+    /// Khi vừa load scene sẽ gọi hàm này để chạy màn hình loading
+    /// </summary>
     void Start()
     {
         // Kiểm tra nếu là lần đầu vào game hoặc được yêu cầu loading
@@ -21,7 +36,7 @@ public class SceneLoader : Singleton<SceneLoader>
     }
 
     /// <summary>
-    /// Hàm này để gán vào button hoặc gọi từ bất cứ đâu
+    /// Gán callback về Home vào staticOnLoadingComplete nếu nó bằng null, sau đó gọi LoadingCoroutine để loading
     /// </summary>
     public void StartLoading()
     {
@@ -36,6 +51,11 @@ public class SceneLoader : Singleton<SceneLoader>
         StartCoroutine(LoadingCoroutine());
     }
 
+    /// <summary>
+    /// khi loadscene thì dùng singleton để gọi hàm này
+    /// isReplay: true nếu là replay thì gán hàm replay cho chế độ chơi normal/pvp
+    /// isReplay: false nếu là load lại scene bình thường và hiển thị mainmenu
+    /// </summary>
     public void ReloadSceneWithLoading(bool isReplay = false)
     {
         DOTween.KillAll();
@@ -66,6 +86,9 @@ public class SceneLoader : Singleton<SceneLoader>
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
+    /// <summary>
+    /// Khi isReplay false sẽ gọi hàm này để bật main menu
+    /// </summary>
     private void DefaultOnHidden()
     {
 
@@ -79,6 +102,9 @@ public class SceneLoader : Singleton<SceneLoader>
 
     }
 
+    /// <summary>
+    /// Khi isReplay true sẽ gọi hàm này để bắt đầu lại game ở chế độ normal
+    /// </summary>
     private void ReplayGame()
     {
         // Dừng nhạc chủ đề và phát nhạc trong game
@@ -93,6 +119,9 @@ public class SceneLoader : Singleton<SceneLoader>
         Time.timeScale = 1; // Tiếp tục thời gian khi chơi lại
     }
 
+    /// <summary>
+    /// Khi isReplay true sẽ gọi hàm này để bắt đầu lại game ở chế độ pvp
+    /// </summary>
     private void PVPReplayGame()
     {
         // Dừng nhạc chủ đề và phát nhạc trong game
@@ -107,6 +136,9 @@ public class SceneLoader : Singleton<SceneLoader>
         Time.timeScale = 1; // Tiếp tục thời gian khi chơi lại
     }
 
+    /// <summary>
+    /// Coroutine để bật UI và xử lý loading
+    /// </summary>
     private IEnumerator LoadingCoroutine()
     {
         isLoading = true;

@@ -179,3 +179,22 @@ Stop():
 | `flightPoints`            | Danh sách điểm có thể bay tới tránh vật cản |
 | `obstacleLayerMask`       | Layer dùng để raycast                       |
 | `safePosition`            | Vị trí an toàn hiện tại (đã tìm được)       |
+
+### 🔄 Cơ Chế Hoạt Động SceneLoader
+
+🧩 Khi cần load lại scene, gọi:  
+`SceneLoader.Instance.ReloadSceneWithLoading(true/false)`
+
+- ✅ Nếu truyền `false`: **không gán callback replay**, dùng mặc định về màn hình chính (`DefaultOnHidden`)
+- 🔁 Nếu truyền `true`: **gán callback replay** tương ứng với chế độ chơi hiện tại (`ReplayGame` hoặc `PVPReplayGame`)
+
+📌 Callback sẽ được lưu tạm vào biến `staticOnLoadingComplete` để sử dụng sau khi load lại scene.
+
+🎬 Khi scene được load lại:
+
+- `Start()` sẽ tự động gọi `StartLoading()`
+- `StartLoading()` kiểm tra `staticOnLoadingComplete`:
+  - Nếu **null** → gán callback mặc định (`DefaultOnHidden`)
+  - Nếu **đã có** → giữ nguyên, không thay đổi
+- Gọi coroutine `LoadingCoroutine()` để hiển thị thanh loading
+- Khi loading hoàn tất → gọi `staticOnLoadingComplete.Invoke()` và reset về `null`
