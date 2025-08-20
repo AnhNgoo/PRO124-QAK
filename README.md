@@ -180,7 +180,7 @@ Stop():
 | `obstacleLayerMask`       | Layer dùng để raycast                       |
 | `safePosition`            | Vị trí an toàn hiện tại (đã tìm được)       |
 
-### 🔄 Cơ Chế Hoạt Động SceneLoader
+## 🔄 Cơ Chế Hoạt Động SceneLoader
 
 🧩 Khi cần load lại scene, gọi:  
 `SceneLoader.Instance.ReloadSceneWithLoading(true/false)`
