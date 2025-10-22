@@ -216,7 +216,7 @@ public class Wrecker : MonoBehaviour
         {
             Transform safeFlightPoint = FindSafeFlight();
             if (safeFlightPoint != null &&
-                Vector3.Distance(wrecker.transform.position, safeFlightPoint.position) > 0.5f)
+                Vector3.Distance(wrecker.transform.position, safeFlightPoint.position) > 0.5f) // Nếu wrecker ở xa vị trị an toàn thì di chuyển lại safepos
             {
                 safePosition = safeFlightPoint.position;
                 wrecker.transform.DOMove(safePosition, 0.8f)
